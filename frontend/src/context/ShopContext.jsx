@@ -1,0 +1,540 @@
+import { createContext, useEffect, useState } from "react";
+// import {products} from "../assets/frontend_assets/assets"
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
+
+export const ShopContext = createContext();
+
+const ShopContextProvider = (props) => {
+
+    const currency = "₹ ";
+    const delivery_fee = 10;
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+    const [search, setSearch] = useState('');
+    const [showSearch, setShowSearch] = useState(false);
+    const [cartItems, setCartItems] = useState({})
+    const navigate = useNavigate()
+    const [products, setProducts] = useState([]);
+    const [token, setToken] = useState("")
+    const [subCategoryData, setSubCategoryData] = useState("")
+    const [wishlistItems, setWishlistItems] = useState({});
+
+
+
+    const addToCart = async (itemId, selectedAttributeValues) => {
+        let cartData = structuredClone(cartItems);
+
+        // Create a unique key for this item + attributes combination
+        const attributesKey = JSON.stringify(selectedAttributeValues || {});
+        const cartItemKey = `${itemId}_${attributesKey}`;
+
+        // Check if this exact item with these attributes exists
+        if (cartData[cartItemKey]) {
+            cartData[cartItemKey].quantity += 1;
+        } else {
+            cartData[cartItemKey] = {
+                itemId, // Store original itemId for reference
+                quantity: 1,
+                attributes: selectedAttributeValues
+            };
+        }
+
+        setCartItems(cartData);
+        console.log(cartData);
+
+        if (token) {
+            try {
+                const response = await axios.post(backendUrl + "/api/cart/add",
+                    { itemId, selectedAttributeValues },
+                    { headers: { token } }
+                );
+
+                if (response.data.message) {
+                    toast.success(response.data.message);
+                }
+            } catch (error) {
+                console.log(error);
+                toast.error(error.message);
+            }
+        }
+    };
+
+    const getCartCount = () => {
+        let totalCount = 0;
+
+        try {
+            for (const cartItemKey in cartItems) {
+                const item = cartItems[cartItemKey];
+                if (item && item.quantity > 0) {
+                    totalCount += item.quantity;
+                }
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error(error.message);
+        }
+
+        return totalCount;
+    };
+
+    const updateQuantity = async (itemId, quantity, selectedAttributeValues) => {
+        let cartData = structuredClone(cartItems);
+
+        // Create the same composite key used in addToCart
+        const attributesKey = JSON.stringify(selectedAttributeValues || {});
+        const cartItemKey = `${itemId}_${attributesKey}`;
+
+        if (cartData[cartItemKey]) {
+            cartData[cartItemKey].quantity = quantity;
+        }
+
+        setCartItems(cartData);
+
+        if (token) {
+            try {
+                const response = await axios.post(backendUrl + "/api/cart/update",
+                    { itemId, quantity, selectedAttributeValues },
+                    { headers: { token } }
+                );
+
+                if (response.data.message) {
+                    toast.success(response.data.message);
+                }
+            } catch (error) {
+                console.log(error);
+                toast.error(error.message);
+            }
+        }
+    };
+
+    const getCartAmount = () => {
+        let totalAmount = 0;
+
+        for (const cartItemKey in cartItems) {
+            const item = cartItems[cartItemKey];
+
+            try {
+                if (item && item.quantity > 0) {
+                    // Extract the original itemId from the composite key or from the item object
+                    const itemId = item.itemId || cartItemKey.split('_')[0];
+
+                    // Find the product details for the current itemId
+                    const itemInfo = products.find((product) => product._id === itemId);
+                    if (itemInfo) {
+                        totalAmount += itemInfo.price * item.quantity;
+                    }
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        return totalAmount;
+    };
+
+    // const getCartCount = () => {
+    //     let totalCount = 0;
+
+    //     try {
+    //         for (const itemId in cartItems) {
+    //             const item = cartItems[itemId];
+    //             if (item && item.quantity > 0) {
+    //                 totalCount += item.quantity;
+    //             }
+    //         }
+    //     } catch (error) {
+    //         console.error(error);
+    //         toast.error(error.message);
+    //     }
+
+    //     return totalCount;
+    // };
+
+    // const updateQuantity = async (itemId, quantity, selectedAttributeValues) => {
+    //     let cartData = structuredClone(cartItems);
+
+    //     if (cartData[itemId]) {
+    //         cartData[itemId].quantity = quantity;
+
+    //         // Ensure attributes are also updated if provided
+    //         if (selectedAttributeValues) {
+    //             cartData[itemId].attributes = selectedAttributeValues;
+    //         }
+    //     }
+
+    //     setCartItems(cartData);
+
+    //     if (token) {
+    //         try {
+    //             const response = await axios.post(backendUrl + "/api/cart/update",
+    //                 { itemId, quantity, selectedAttributeValues },
+    //                 { headers: { token } }
+    //             );
+
+    //             if (response.data.message) {
+    //                 toast.success(response.data.message);
+    //             }
+    //         } catch (error) {
+    //             console.log(error);
+    //             toast.error(error.message);
+    //         }
+    //     }
+    // };
+
+    // const getCartAmount = () => {
+    //     let totalAmount = 0;
+
+    //     for (const itemId in cartItems) {
+    //         const item = cartItems[itemId];
+
+    //         try {
+    //             if (item && item.quantity > 0) {
+    //                 // Find the product details for the current itemId
+    //                 const itemInfo = products.find((product) => product._id === itemId);
+    //                 if (itemInfo) {
+    //                     totalAmount += itemInfo.price * item.quantity;
+    //                 }
+    //             }
+    //         } catch (error) {
+    //             console.error(error);
+    //         }
+    //     }
+
+    //     return totalAmount;
+    // };
+
+
+    const getProductsData = async () => {
+        try {
+            const response = await axios.get(backendUrl + "/api/product/list");
+            if (response.data.success) {
+                setProducts(response.data.products)
+                console.log(response.data.products)
+
+            } else {
+                toast.error(response.data.message)
+            }
+
+
+
+        } catch (error) {
+            console.log(error);
+            toast.error(error.message)
+
+        }
+    }
+
+
+    const getSubCategoryData = async () => {
+        try {
+            const response = await axios.get(`${backendUrl}/api/category/getSubCategory`);
+            if (response.data.success) {
+                const subCategoryData = response.data.categories.reduce((acc, category) => {
+                    acc[category.category] = category.subcategories;
+                    return acc;
+                }, {});
+                console.log(subCategoryData);
+                setSubCategoryData(subCategoryData);
+            } else {
+                toast.error(response.data.message);
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error(error.message);
+        }
+    };
+
+    // getSubCategoryData();
+
+    // Add to wishlist
+    // const addToWishlist = async (itemId) => {
+    //     let wishlistData = structuredClone(wishlistItems);
+
+    //     // In wishlist we just need to track if item exists (value 1)
+    //     wishlistData[itemId] = 1;
+
+    //     setWishlistItems(wishlistData);
+
+    //     if (token) {
+    //         try {
+    //             const response = await axios.post(
+    //                 backendUrl + "/api/wishlist/add",
+    //                 { itemId },
+    //                 { headers: { token } }
+    //             );
+    //             if (response.data.message) {
+    //                 toast.success(response.data.message);
+    //             }
+    //         } catch (error) {
+    //             console.log(error);
+    //             toast.error(error.message);
+    //         }
+    //     }
+    // };
+
+
+    // // Remove from wishlist
+    // const removeFromWishlist = async (itemId) => {
+    //     let wishlistData = structuredClone(wishlistItems);
+
+    //     if (wishlistData[itemId]) {
+    //         delete wishlistData[itemId];
+    //         setWishlistItems(wishlistData);
+
+    //         if (token) {
+    //             try {
+    //                 const response = await axios.post(
+    //                     backendUrl + "/api/wishlist/remove",
+    //                     { itemId },
+    //                     { headers: { token } }
+    //                 );
+    //                 if (response.data.message) {
+    //                     toast.success(response.data.message);
+    //                 }
+    //             } catch (error) {
+    //                 console.log(error);
+    //                 toast.error(error.message);
+    //             }
+    //         }
+    //     }
+    // };
+
+
+    // // Move from wishlist to cart
+    // const moveToCart = async (itemId) => {
+    //     if (wishlistItems[itemId]) {
+    //         // First add to cart
+    //         await addToCart(itemId);
+
+    //         // Then remove from wishlist
+    //         await removeFromWishlist(itemId);
+
+    //         if (token) {
+    //             try {
+    //                 const response = await axios.post(
+    //                     backendUrl + "/api/wishlist/move-to-cart",
+    //                     { itemId },
+    //                     { headers: { token } }
+    //                 );
+    //                 if (response.data.message) {
+    //                     toast.success(response.data.message);
+    //                 }
+    //             } catch (error) {
+    //                 console.log(error);
+    //                 toast.error(error.message);
+    //             }
+    //         }
+    //     }
+    // };
+
+    // // Get wishlist count
+    // const getWishlistCount = () => {
+    //     return Object.keys(wishlistItems).length;
+    // };
+
+    // // Check if item is in wishlist
+    // const isInWishlist = (itemId) => {
+    //     return !!wishlistItems[itemId];
+    // };
+
+    // // Get user's wishlist from the backend
+    // const getUserWishlist = async (token) => {
+    //     try {
+    //         const response = await axios.post(
+    //             backendUrl + "/api/wishlist/get",
+    //             {},
+    //             { headers: { token } }
+    //         );
+
+    //         if (response.data.success) {
+    //             setWishlistItems(response.data.wishlistData);
+    //         }
+    //     } catch (error) {
+    //         console.log(error);
+    //         toast.error(error.message);
+    //     }
+    // };
+
+// Add to wishlist
+const addToWishlist = async (itemId, selectedAttributeValues) => {
+    let wishlistData = structuredClone(wishlistItems);
+
+    // Create a unique key for this item + attributes combination
+    const attributesKey = JSON.stringify(selectedAttributeValues || {});
+    const wishlistItemKey = `${itemId}_${attributesKey}`;
+
+    // Store the item in wishlist
+    wishlistData[wishlistItemKey] = {
+        itemId,
+        attributes: selectedAttributeValues,
+    };
+
+    setWishlistItems(wishlistData);
+
+    if (token) {
+        try {
+            const response = await axios.post(
+                backendUrl + "/api/wishlist/add",
+                { itemId, selectedAttributeValues },
+                { headers: { token } }
+            );
+            if (response.data.message) {
+                toast.success(response.data.message);
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error(error.message);
+        }
+    }
+};
+
+// Remove from wishlist
+const removeFromWishlist = async (itemId, selectedAttributeValues) => {
+    let wishlistData = structuredClone(wishlistItems);
+
+    const attributesKey = JSON.stringify(selectedAttributeValues || {});
+    const wishlistItemKey = `${itemId}_${attributesKey}`;
+
+    if (wishlistData[wishlistItemKey]) {
+        delete wishlistData[wishlistItemKey];
+        setWishlistItems(wishlistData);
+
+        if (token) {
+            try {
+                const response = await axios.post(
+                    backendUrl + "/api/wishlist/remove",
+                    { itemId, selectedAttributeValues },
+                    { headers: { token } }
+                );
+                if (response.data.message) {
+                    toast.success(response.data.message);
+                }
+            } catch (error) {
+                console.log(error);
+                toast.error(error.message);
+            }
+        }
+    }
+};
+
+// Move from wishlist to cart
+const moveToCart = async (itemId, selectedAttributeValues) => {
+    const attributesKey = JSON.stringify(selectedAttributeValues || {});
+    const wishlistItemKey = `${itemId}_${attributesKey}`;
+
+    if (wishlistItems[wishlistItemKey]) {
+        // First add to cart
+        await addToCart(itemId, selectedAttributeValues);
+
+        // Then remove from wishlist
+        await removeFromWishlist(itemId, selectedAttributeValues);
+
+        if (token) {
+            try {
+                const response = await axios.post(
+                    backendUrl + "/api/wishlist/move-to-cart",
+                    { itemId, selectedAttributeValues },
+                    { headers: { token } }
+                );
+                if (response.data.message) {
+                    toast.success(response.data.message);
+                }
+            } catch (error) {
+                console.log(error);
+                toast.error(error.message);
+            }
+        }
+    }
+};
+
+// Get wishlist count
+const getWishlistCount = () => {
+    return Object.keys(wishlistItems).length;
+};
+
+// Check if item is in wishlist
+const isInWishlist = (itemId, selectedAttributeValues) => {
+    const attributesKey = JSON.stringify(selectedAttributeValues || {});
+    const wishlistItemKey = `${itemId}_${attributesKey}`;
+    return !!wishlistItems[wishlistItemKey];
+};
+
+// Get user's wishlist from the backend
+const getUserWishlist = async (token) => {
+    try {
+        const response = await axios.post(
+            backendUrl + "/api/wishlist/get",
+            {},
+            { headers: { token } }
+        );
+
+        if (response.data.success) {
+            setWishlistItems(response.data.wishlistData);
+        }
+    } catch (error) {
+        console.log(error);
+        toast.error(error.message);
+    }
+};
+
+
+
+    const getUserCart = async (token) => {
+        try {
+            const response = await axios.post(backendUrl + "/api/cart/get", {}, { headers: { token } })
+
+            if (response.data.success) {
+                setCartItems(response.data.cartData)
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error(error.message)
+
+        }
+    }
+
+
+    
+
+
+
+
+
+    useEffect(() => {
+        getProductsData();
+        getSubCategoryData();
+    }, [])
+
+    useEffect(() => {
+        if (!token && localStorage.getItem("token")) {
+            setToken(localStorage.getItem("token"));
+            getUserCart(localStorage.getItem("token"));
+            getUserWishlist(localStorage.getItem("token"));
+        }
+    })
+
+
+
+
+    const value = {
+        products, currency, delivery_fee, search, setSearch, showSearch, setShowSearch, cartItems, addToCart, getCartCount, updateQuantity, getCartAmount, navigate, backendUrl, token, setToken, setCartItems, subCategoryData, wishlistItems,
+        setWishlistItems,
+        addToWishlist,
+        removeFromWishlist,
+        moveToCart,
+        getWishlistCount,
+        isInWishlist
+    }
+
+    return (
+        <ShopContext.Provider value={value}>
+            {props.children}
+        </ShopContext.Provider>
+    )
+
+
+}
+
+export default ShopContextProvider;

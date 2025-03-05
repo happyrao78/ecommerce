@@ -1,0 +1,75 @@
+/* @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Prata&display=swap'); */
+/* @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap'); */
+/* @import url('https://fonts.googleapis.com/css2?family=Teko:wght@300..700&display=swap'); */ 
+
+@import url('https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@100..900&display=swap');
+@import "slick-carousel/slick/slick.css";
+@import "slick-carousel/slick/slick-theme.css";
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+a.active hr{
+  display: block;
+}
+
+
+*{
+  font-family:"Kumbh Sans", serif;
+  /* overflow-x: hidden; */
+}
+::-webkit-scrollbar{
+  display: none;
+}
+
+
+/* .prata-regular {
+  font-family: "Prata", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+.teko {
+  font-family: "Teko", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+} */
+
+
+
+@media (max-width:640px){
+  a.active{
+    background-color: #db3f0e;
+    color: white;
+  }
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-scroll {
+  display: inline-block;
+  animation: scroll 10s linear infinite;
+}
+li.slick-active{ 
+  border: 0.5px solid black;
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.slick-dots button{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
