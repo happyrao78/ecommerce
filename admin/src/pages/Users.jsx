@@ -8,6 +8,7 @@ import {
     DeviceTabletIcon,
     ComputerDesktopIcon 
 } from '@heroicons/react/24/outline';
+import { backendUrl } from '../App';
 
 const Users = () => {
     const [users, setUsers] = useState([]);
@@ -18,7 +19,7 @@ const Users = () => {
     useEffect(() => {
       const fetchAllUsers = async () => {
           try {
-              const response = await axios.get('http://localhost:4000/api/user/all');
+              const response = await axios.get(`${backendUrl}/api/user/all`);
 
               console.log("Full Response:", response);
 
