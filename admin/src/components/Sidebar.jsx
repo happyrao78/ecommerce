@@ -110,6 +110,24 @@ const Sidebar = ({ setToken,isOpen,setIsOpen }) => {
             )}
           </div>
 
+          {/* Discount Menu */}
+          <div>
+            <button 
+              className='flex items-center gap-3 w-full p-2 rounded-lg bg-white' 
+              onClick={() => toggleSubMenu('discount')}
+            >
+              <ClipboardList size={24} />
+              {isOpen && <span>Discount</span>}
+              {openSubMenu === 'discount' ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+            </button>
+            {openSubMenu === 'discount' && isOpen && (
+              <div className='ml-6 flex flex-col gap-2 mt-2'>
+                <NavLink to="/add-discount" className="p-2 rounded-lg bg-white">Add Coupon</NavLink>
+                <NavLink to="/list-discount" className="p-2 rounded-lg bg-white">List Coupon</NavLink>
+              </div>
+            )}
+          </div>
+
           {/* Orders Menu */}
           <div>
           <NavLink to="/orders" className="flex items-center gap-3 p-2 rounded-lg bg-white">
@@ -117,6 +135,8 @@ const Sidebar = ({ setToken,isOpen,setIsOpen }) => {
             {isOpen && <span>Orders</span>}
           </NavLink>
           </div>
+
+          
 
           {/* Admin Phone Menu */}
           <div>

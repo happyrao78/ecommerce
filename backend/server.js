@@ -14,6 +14,7 @@ import wishlistRouter from "./routes/wishlistRoute.js";
 import attributeRouter from "./routes/attribute.route.js";
 import dynamicRouter from "./routes/dynamic.route.js";
 import extractDeviceInfo from "./middleware/device.info.middleware.js";
+import discountRouter from "./routes/discount.route.js";
 
 
 //App Config
@@ -39,7 +40,7 @@ app.use("/api/review",reviewRouter)
 app.use("/api/category", catRouter)
 app.use("/api/attribute",attributeRouter)
 app.use("/api/dynamic", dynamicRouter)
-
+app.use("/api/discount",discountRouter)
 
 
 app.get("/",(req,res)=>{ 

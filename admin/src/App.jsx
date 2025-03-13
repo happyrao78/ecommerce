@@ -20,6 +20,8 @@ import Users from './pages/Users'
 // import Report from './pages/Report'
 import Footer from "./components/Footer";
 import Dashboard from './pages/Dashboard'
+import AddDiscount from './pages/AddDiscount'
+import ListDiscount from './pages/ListDiscount'
 
 
 export const backendUrl = import.meta.env.VITE_BACKEND_URL;
@@ -59,6 +61,8 @@ const App = () => {
                 <Route path="/admin-phone" element={<AdminPhone />} />
                 <Route path="/users" element={<Users token={token}/>} />
                 <Route path="/dashboard" element={<Dashboard token={token}/>} />
+                <Route path="/add-discount" element={<AddDiscount token={token}/>} />
+                <Route path="/list-discount" element={<ListDiscount token={token}/>} />
                 {/* <Route path="/reports" element={<Report token={token}/>} /> */}
 
               </Routes>
