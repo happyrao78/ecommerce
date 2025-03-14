@@ -12,35 +12,58 @@ const Orders = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
 
-  const loadOrderData = async () => {
-    try {
-      if (!token) {
-        return null
-      }
-
-      const response = await axios.post(backendUrl + "/api/order/userorders", {}, { headers: { token } })
-      
-      if (response.data.success) {
-        let allOrdersItem = [];
-
-        response.data.orders.map((order) => {
-          order.items.map((item) => {
-            item["status"] = order.status
-            item["payment"] = order.payment
-            item["paymentMethod"] = order.paymentMethod
-            item["date"] = order.date
-            allOrdersItem.push(item)
-          })
-        })
-        
-        setOrderData(allOrdersItem.reverse())
-      }
-
-    } catch (error) {
-      console.log(error)
-      toast.error(error.message)
+  // In the loadOrderData function, modify how you're processing orders:
+const loadOrderData = async () => {
+  try {
+    if (!token) {
+      return null
     }
+
+    const response = await axios.post(backendUrl + "/api/order/userorders", {}, { headers: { token } })
+    
+    if (response.data.success) {
+      let allOrdersItem = [];
+
+      response.data.orders.map((order) => {
+        // Store order-level discount information
+        const orderDiscountAmount = order.discountAmount || 0;
+        const orderOriginalAmount = order.originalAmount || 0;
+        const orderCouponCode = order.couponCode || null;
+        const orderAmount = order.amount || 0;
+        
+        order.items.map((item) => {
+          // Calculate the proportion of this item in the total order
+          const itemTotal = item.price * item.quantity;
+          const proportion = orderOriginalAmount > 0 ? itemTotal / orderOriginalAmount : 0;
+          
+          // Calculate this item's share of the discount
+          const itemDiscountAmount = orderDiscountAmount * proportion;
+          
+          // Assign all necessary properties to the item
+          item["status"] = order.status;
+          item["payment"] = order.payment;
+          item["paymentMethod"] = order.paymentMethod;
+          item["date"] = order.date;
+          item["discountAmount"] = itemDiscountAmount;
+          item["originalPrice"] = order.originalAmount;
+          item["discountedPrice"] = order.amount;
+          item["couponCode"] = orderCouponCode;
+          item["orderId"] = order._id;
+          
+          allOrdersItem.push(item);
+        });
+      });
+      
+      setOrderData(allOrdersItem.reverse());
+    }
+
+  } catch (error) {
+    console.log(error);
+    console.error(error.message);
+    // Make sure toast is imported or use another notification method
+    // toast.error(error.message);
   }
+}
 
   // Filter and search logic
   useEffect(() => {
@@ -110,27 +133,45 @@ const Orders = () => {
               className="border shadow-sm rounded-lg overflow-hidden bg-white hover:shadow-md transition-all duration-300"
             >
               {/* Order Header - Mobile & Desktop */}
-              <div className="bg-gray-50 p-4 flex justify-between items-center border-b gap-2 sm:gap-2 ">
-                <div className='flex flex-col gap-1 '>
-                  <p className="text-xs text-gray-500">ORDER PLACED</p>
-                  <p className=" text-xs lg:text-sm font-medium">{(new Date(item.date)).toLocaleDateString()}</p>
-                </div>
-                <div className='flex flex-col gap-1 '>
-                  <p className="text-xs text-gray-500">TOTAL</p>
-                  <p className="text-xs lg:text-sm font-medium text-nowrap">{currency}{(item.price * item.quantity).toFixed(2)}</p>
-                </div>
-                <div className="hidden sm:block">
-                  <p className="text-xs text-gray-500">PAYMENT</p>
-                  <p className="text-sm font-medium">{item.paymentMethod}</p>
-                </div>
-                <div className="flex items-center gap-2 ">
-                  <span className={`w-2 h-2 rounded-full hidden sm:hidden lg:block ${item.status === "Completed" ? "bg-green-500" :
-                    item.status === "Pending" ? "bg-yellow-500" :
-                      item.status === "Cancelled" ? "bg-red-500" : "bg-blue-500"
-                    }`}></span>
-                  <p className="text-xs lg:text-sm font-medium text-end  sm:text-end lg:text-start">{item.status}</p>
-                </div>
-              </div>
+              {/* Order Header - Mobile & Desktop */}
+<div className="bg-gray-50 p-4 flex justify-between items-center border-b gap-2 sm:gap-2 ">
+  <div className='flex flex-col gap-1 '>
+    <p className="text-xs text-gray-500">ORDER PLACED</p>
+    <p className=" text-xs lg:text-sm font-medium">{(new Date(item.date)).toLocaleDateString()}</p>
+  </div>
+  <div className='flex flex-col gap-1 '>
+    <p className="text-xs text-gray-500">TOTAL</p>
+    {item.discountAmount > 0 ? (
+      <div>
+        <p className="text-xs lg:text-sm font-medium text-nowrap line-through text-gray-500">
+          {currency}{item.originalPrice.toFixed(2)}
+        </p>
+        <p className="text-xs lg:text-sm font-medium text-nowrap text-green-600">
+          {currency}{item.discountedPrice.toFixed(2)}
+        </p>
+      </div>
+    ) : (
+      <p className="text-xs lg:text-sm font-medium text-nowrap">
+        {currency}{(item.price * item.quantity).toFixed(2)}
+      </p>
+    )}
+  </div>
+  <div className="hidden sm:block">
+    <p className="text-xs text-gray-500">PAYMENT</p>
+    <p className="text-sm font-medium">{item.paymentMethod}</p>
+  </div>
+  <div className="flex flex-col">
+    <p className="text-xs text-gray-500 hidden sm:block">STATUS</p>
+    <div className="flex items-center gap-2">
+      <span className={`w-2 h-2 rounded-full hidden sm:hidden lg:block ${
+        item.status === "Completed" ? "bg-green-500" :
+        item.status === "Pending" ? "bg-yellow-500" :
+        item.status === "Cancelled" ? "bg-red-500" : "bg-blue-500"
+      }`}></span>
+      <p className="text-xs lg:text-sm font-medium text-end sm:text-end lg:text-start">{item.status}</p>
+    </div>
+  </div>
+</div>
 
               {/* Order Content */}
               <div className="p-4 flex flex-col sm:flex-row gap-4">
@@ -144,22 +185,38 @@ const Orders = () => {
                 </div>
 
                 {/* /* Product Details */ }
-                <div className="flex-grow flex flex-col justify-between">
-                  <div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-1">{item.name}</h3>
-                    <p className="text-sm text-gray-600 mb-2">Qty: {item.quantity}</p>
-                    <p className="text-sm text-gray-600 block sm:hidden">Payment: {item.paymentMethod}</p>
-
-                    <div className="hidden sm:block mt-2 text-sm text-gray-500">
-                      <p>Item #: {item._id.slice(-6, -1)}</p>
-                      {item.attributes && Object.entries(item.attributes).map(([key, value], attrIndex) => (
-                        <p key={attrIndex}>
-                          {key[0].toUpperCase() + key.slice(1)}: {value[0].toUpperCase() + value.slice(1)}
-                        </p>
-                      ))}
-                    </div>
-                  </div>
-                </div>
+                {/* Product Details */}
+<div className="flex-grow flex flex-col justify-between">
+  <div>
+    <h3 className="text-lg font-medium text-gray-900 mb-1">{item.name}</h3>
+    <p className="text-sm text-gray-600 mb-2">Qty: {item.quantity}</p>
+    <p className="text-sm text-gray-600 block sm:hidden">Payment: {item.paymentMethod}</p>
+    
+    {/* Show coupon information if applied */}
+    {item.couponCode && (
+      <div className="mt-1 mb-2">
+        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+          Coupon: {item.couponCode}
+        </span>
+        {item.discountAmount > 0 && (
+          <p className="text-xs text-green-600 mt-1">
+            Saved: {currency}{item.discountAmount.toFixed(2)}
+          </p>
+        )}
+      </div>
+    )}
+    
+    <div className="hidden sm:block mt-2 text-sm text-gray-500">
+      <p>Order ID: {item.orderId.slice(-6)}</p>
+      <p>Item #: {item._id.slice(-6, -1)}</p>
+      {item.attributes && Object.entries(item.attributes).map(([key, value], attrIndex) => (
+        <p key={attrIndex}>
+          {key[0].toUpperCase() + key.slice(1)}: {value[0].toUpperCase() + value.slice(1)}
+        </p>
+      ))}
+    </div>
+  </div>
+</div>
 
                 {/* Action Buttons - Right Side */}
                 <div className="flex flex-row sm:flex-col justify-center items-center gap-3 mt-4 sm:mt-0">

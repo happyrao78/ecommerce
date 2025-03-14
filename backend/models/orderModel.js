@@ -10,6 +10,17 @@ const orderSchema = new mongoose.Schema({
     payment:{type:Boolean,required:true,default:false},
     date:{type:Number,required:true},
     trackingLink: { type: String, default: null }, 
+    originalAmount: {
+    type: Number,
+    required: false
+  },
+  discountAmount: {
+    type: Number,
+    default: 0
+  },
+  couponCode: {
+    type: String
+  }
 
     
 

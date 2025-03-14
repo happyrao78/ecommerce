@@ -6,7 +6,8 @@ import {
   getDiscountCouponById, 
   createDiscountCoupon,
   updateDiscountCoupon,
-  deleteDiscountCoupon 
+  deleteDiscountCoupon,
+  validateCoupon
 } from '../controllers/discount.controller.js';
 
 const discountRouter = express.Router();
@@ -21,5 +22,9 @@ discountRouter
   .get(getDiscountCouponById)
   .put(updateDiscountCoupon)
   .delete(deleteDiscountCoupon);
+
+discountRouter
+  .route('/validate')
+  .post(validateCoupon);
 
 export default discountRouter;

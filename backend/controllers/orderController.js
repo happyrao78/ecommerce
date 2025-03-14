@@ -20,13 +20,16 @@ const razorpayInstance = new razorpay({
 
 const placeOrder = async(req,res)=>{
     try {
-        const {userId,items,amount,address}= req.body
+        const {userId,items,amount,originalAmount,discountAmount,couponCode,address}= req.body
 
     const orderData = {
         userId,
         items,
         address,
-        amount,
+        amount : originalAmount - discountAmount,
+        originalAmount : originalAmount || amount ,
+        discountAmount : discountAmount || 0,
+        couponCode : couponCode || "",
         paymentMethod:"COD",
         payment:false,
         date:Date.now()

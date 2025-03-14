@@ -140,3 +140,80 @@ export const deleteDiscountCoupon = async (req, res) => {
     });
   }
 };
+
+// Add this to your discountCoupon.controller.js
+
+// Validate coupon code
+export const validateCoupon = async (req, res) => {
+  try {
+    const { code } = req.body;
+    
+    if (!code) {
+      return res.status(400).json({
+        success: false,
+        error: 'Please provide a coupon code'
+      });
+    }
+    
+    // Find the coupon case-insensitive
+    const coupon = await DiscountCoupon.findOne({
+      code: { $regex: new RegExp('^' + code + '$', 'i') }
+    });
+    
+    if (!coupon) {
+      return res.status(404).json({
+        success: false,
+        error: 'Coupon not found'
+      });
+    }
+    
+    // Check if coupon is active
+    if (!coupon.isActive) {
+      return res.status(400).json({
+        success: false,
+        error: 'This coupon is not active'
+      });
+    }
+    
+    // Check expiration date
+    if (coupon.expiryDate && new Date(coupon.expiryDate) < new Date()) {
+      return res.status(400).json({
+        success: false,
+        error: 'This coupon has expired'
+      });
+    }
+    
+    // Check minimum purchase amount if set
+    if (req.body.cartAmount && coupon.minOrderAmount && req.body.cartAmount < coupon.minOrderAmount) {
+      return res.status(400).json({
+        success: false,
+        error: `Minimum purchase of ${coupon.minOrderAmount} required`
+      });
+    }
+    
+    // Check usage limit per user if applicable
+    // if (coupon.usageLimit) {
+    //   // If you have user tracking for coupons, implement the check here
+    //   // For example:
+    //   // const usageCount = await CouponUsage.find({ couponId: coupon._id, userId: req.user.id }).count();
+    //   // if (usageCount >= coupon.usageLimit) {
+    //   //   return res.status(400).json({
+    //   //     success: false,
+    //   //     error: 'You have reached the usage limit for this coupon'
+    //   //   });
+    //   // }
+    // }
+    
+    // Return coupon details if valid
+    res.status(200).json({
+      success: true,
+      data: coupon
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      error: 'Server Error'
+    });
+  }
+};

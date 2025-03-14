@@ -33,6 +33,64 @@ const PlaceOrder = () => {
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
   const [cartData, setCartData] = useState([]);
+  const [couponCode, setCouponCode] = useState('');
+const [appliedCoupon, setAppliedCoupon] = useState(null);
+const [couponError, setCouponError] = useState('');
+const [discountAmount, setDiscountAmount] = useState(0);
+
+// Add this function to validate the coupon
+const validateCoupon = async () => {
+  if (!couponCode.trim()) {
+    setCouponError('Please enter a coupon code');
+    return;
+  }
+  
+  try {
+    const response = await axios.post(
+      `${backendUrl}/api/discount/validate`, 
+      { code: couponCode },
+      { headers: { token } }
+    );
+    
+    if (response.data.success) {
+      setAppliedCoupon(response.data.data);
+      
+      // Calculate discount amount
+      const cartTotal = getCartAmount();
+      let discount = 0;
+      
+      if (response.data.data.discountType === 'percentage') {
+        discount = (cartTotal * response.data.data.discountValue) / 100;
+        // Apply max discount if set
+        if (response.data.data.maxDiscount && discount > response.data.data.maxDiscount) {
+          discount = response.data.data.maxDiscount;
+        }
+      } else {
+        // Fixed amount discount
+        discount = response.data.data.discountValue;
+      }
+      
+      setDiscountAmount(discount);
+      setCouponError('');
+      toast.success('Coupon applied successfully!');
+    } else {
+      setCouponError(response.data.error || 'Invalid coupon code');
+      setAppliedCoupon(null);
+      setDiscountAmount(0);
+    }
+  } catch (error) {
+    console.log(error);
+    setCouponError(error.response?.data?.error || 'Error validating coupon');
+    setAppliedCoupon(null);
+    setDiscountAmount(0);
+  }
+};
+
+// Modify your getCartAmount function to account for discounts
+const getTotalAmount = () => {
+  const cartTotal = getCartAmount();
+  return cartTotal + delivery_fee - discountAmount;
+};
 
   useEffect(() => {
     const tempData = [];
@@ -131,13 +189,16 @@ const PlaceOrder = () => {
       amount: order.amount,
       currency: order.currency,
       name: "Order Payment",
-      description: "Order Payment",
+      description: appliedCoupon ? `Order Payment (Coupon: ${appliedCoupon.code})` : "Order Payment",
       order_id: order.id,
       receipt: order.receipt,
       handler: async (response) => {
         console.log(response);
         try {
-          const { data } = await axios.post(backendUrl + "/api/order/verifyRazorpay", { ...response}, { headers: { token } })
+          const { data } = await axios.post(backendUrl + "/api/order/verifyRazorpay", { ...response,
+
+            
+          }, { headers: { token } })
           if (data.success) {
             navigate("/orders")
             setCartItems({})
@@ -164,30 +225,6 @@ const PlaceOrder = () => {
 
     try {
       let orderItems = []
-      // for (const items in cartItems){
-      //   for(const item in cartItems[items]){
-      //     if(cartItems[items][item] > 0){
-      //       const itemInfo = structuredClone(products.find((product)=>product._id===items))
-      //       if(itemInfo){
-      //         itemInfo.size = item
-      //         itemInfo.quantity =cartItems[items][item];
-      //         orderItems.push(itemInfo)
-      //       }
-      //     }
-      //   }
-      // }
-
-      // for (const itemId in cartItems) {
-      //   if (cartItems[itemId] > 0) {
-      //     const itemInfo = structuredClone(products.find((product) => product._id === itemId));
-      //     if (itemInfo) {
-      //       itemInfo.quantity = cartItems[itemId];
-      //       orderItems.push(itemInfo);
-      //     }
-      //   }
-      // }
-
-
       for (const cartItemKey in cartItems) {
         const item = cartItems[cartItemKey];
 
@@ -212,8 +249,11 @@ const PlaceOrder = () => {
       let orderData = {
         address: formData,
         items: orderItems,
-        amount: getCartAmount() + delivery_fee,
-        order_id: Math.random() // Replace with actual order ID
+        amount: getTotalAmount(),
+        originalAmount: getCartAmount()+delivery_fee,
+        discountAmount: discountAmount,
+        order_id: Math.random(), // Replace with actual order ID
+        couponCode : appliedCoupon ? appliedCoupon.code : null,
       }
 
       console.log("OrderData", orderData);
@@ -350,6 +390,86 @@ const PlaceOrder = () => {
               );
             })}
           </div>
+          {/* Coupon Code Section */}
+<div className='w-full bg-gray-100 p-4 sm:p-4 lg:p-8 rounded-lg mt-4'>
+  <h1 className='text-2xl font-medium py-4'>Apply Discount Coupon</h1>
+  
+  <div className='flex gap-2'>
+    <input 
+      type="text" 
+      placeholder='Enter coupon code'
+      className='border border-gray-300 rounded-lg py-2 px-4 w-full' 
+      value={couponCode}
+      onChange={(e) => setCouponCode(e.target.value)}
+    />
+    <button 
+      type="button"
+      onClick={validateCoupon}
+      className='bg-black text-white px-4 py-2 rounded-lg'
+    >
+      Apply
+    </button>
+  </div>
+  
+  {couponError && (
+    <p className='text-red-500 text-sm mt-2'>{couponError}</p>
+  )}
+  
+  {appliedCoupon && (
+    <div className='mt-3 p-3 bg-green-50 border border-green-200 rounded-lg'>
+      <div className='flex justify-between items-center'>
+        <div>
+          <p className='font-medium'>{appliedCoupon.code}</p>
+          <p className='text-sm text-gray-600'>
+            {appliedCoupon.discountType === 'percentage' 
+              ? `${appliedCoupon.discountValue}% off` 
+              : `${currency}${appliedCoupon.discountValue} off`}
+          </p>
+        </div>
+        <button 
+          type="button" 
+          className='text-red-500'
+          onClick={() => {
+            setAppliedCoupon(null);
+            setDiscountAmount(0);
+            setCouponCode('');
+          }}
+        >
+          Remove
+        </button>
+      </div>
+    </div>
+  )}
+</div>
+{/* Modify your CartTotal component or add this directly in PlaceOrder */}
+{/* Order Summary */}
+<div className='w-full bg-gray-100 p-4 sm:p-4 lg:p-8 rounded-lg mt-4'>
+  <h1 className='text-2xl font-medium py-4'>Order Summary</h1>
+  
+  <div className='space-y-2'>
+    <div className='flex justify-between'>
+      <span>Subtotal:</span>
+      <span>{currency}{getCartAmount().toFixed(2)}</span>
+    </div>
+    
+    <div className='flex justify-between'>
+      <span>Delivery Fee:</span>
+      <span>{currency}{delivery_fee.toFixed(2)}</span>
+    </div>
+    
+    {appliedCoupon && (
+      <div className='flex justify-between text-green-600'>
+        <span>Discount ({appliedCoupon.code}):</span>
+        <span>-{currency}{discountAmount.toFixed(2)}</span>
+      </div>
+    )}
+    
+    <div className='flex justify-between font-bold text-lg pt-2 border-t border-gray-300 mt-2'>
+      <span>Total:</span>
+      <span>{currency}{getTotalAmount().toFixed(2)}</span>
+    </div>
+  </div>
+</div>
         </div>
       </div>
       <form className='lg:w-1/2 w-full flex flex-col sm:flex-col lg:flex-col justify-between gap-10 lg:gap-8 lg:overflow-y-scroll lg:max-h-[80vh]' onSubmit={onSubmitHandler}>
