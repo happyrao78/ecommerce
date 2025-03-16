@@ -216,7 +216,7 @@ const allOrders = async(req,res)=>{
 
 const recentOrders = async(req,res)=>{
     try {
-        const orders = await orderModel.find({status: "Order Placed"}).sort({_id:-1}).limit(5)
+        const orders = await orderModel.find({status: "Order Placed"}).sort({_id:-1}).limit(500)
         res.json({success:true,orders})
     } catch (error) {
         console.log(error);
