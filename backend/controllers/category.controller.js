@@ -1,5 +1,5 @@
 import Category from "../models/category.model.js";
-
+import { v2 as cloudinary } from "cloudinary";
 const addCategory = async (req, res) => {
     try {
         const { category } = req.body;
@@ -8,9 +8,20 @@ const addCategory = async (req, res) => {
         if (categoryExists) {
             return res.json({ success: false, message: "Category already exists" });
         }
+
+        const image1 = req.files?.image1 && req.files.image1[0];
+        const images = [image1].filter((item) => item != undefined);
+
+        let imagesUrl = "";
+        if (images.length > 0) {
+            // Upload the image to Cloudinary
+            const result = await cloudinary.uploader.upload(images[0].path, { resource_type: "image" });
+            imagesUrl = result.secure_url;
+        }
         
         const newCategory = new Category({
             name: category,
+            image: imagesUrl,
             subcategories: []
         });
         
@@ -134,7 +145,8 @@ const getSubCategories = async (req, res) => {
             
             const result = categories.map(cat => ({
                 category: cat.name,
-                subcategories: cat.subcategories
+                subcategories: cat.subcategories,
+                image : cat.image
             }));
             
             res.json({ success: true, categories: result });

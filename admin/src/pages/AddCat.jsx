@@ -9,6 +9,17 @@ const AddCat = ({ token }) => {
   const [subcategory, setSubcategory] = useState('');
   const [subcategories, setSubcategories] = useState([]);
   const [loading, setLoading] = useState(false);
+  // Add file input and preview functionality
+const [imageFile, setImageFile] = useState('');
+const [imagePreview, setImagePreview] = useState('');
+
+const handleImageChange = (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
+  }
+};
 
   const handleAddSubcategory = () => {
     if (subcategory.trim()) {
@@ -30,17 +41,32 @@ const AddCat = ({ token }) => {
       toast.error('Please enter a category name');
       return;
     }
-
+  
+    if(!imageFile){
+      toast.error('Please upload an image');
+      return;
+    }
+  
     setLoading(true);
-
+  
     try {
-      // Add the category first
+      // Create FormData object
+      const formData = new FormData();
+      formData.append('category', category.trim());
+      formData.append('image1', imageFile);
+  
+      // Add the category with image
       const categoryRes = await axios.post(
         `${backendUrl}/api/category/addCategory`,
-        { category: category.trim() },
-        { headers: { Authorization: `Bearer ${token}` } }
+        formData,
+        { 
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data'
+          } 
+        }
       );
-
+  
       if (categoryRes.data.success) {
         toast.success('Category added successfully');
         
@@ -64,6 +90,8 @@ const AddCat = ({ token }) => {
         // Reset form
         setCategory('');
         setSubcategories([]);
+        setImageFile(null);
+        setImagePreview('');
       } else {
         toast.error(categoryRes.data.message || 'Failed to add category');
       }
@@ -81,6 +109,26 @@ const AddCat = ({ token }) => {
       
       <form onSubmit={handleSubmit}>
         <div className="mb-5">
+      
+  <label className="block text-gray-700 font-medium mb-2">
+    Category Image
+  </label>
+  <input
+    type="file"
+    accept="image/*"
+    onChange={handleImageChange}
+    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+  />
+  {imagePreview && (
+    <div className="mt-2">
+      <img 
+        src={imagePreview} 
+        alt="Category preview" 
+        className="h-40 object-contain rounded-md"
+      />
+    </div>
+  )}
+
           <label htmlFor="category" className="block text-gray-700 font-medium mb-2">
             Category Name
           </label>

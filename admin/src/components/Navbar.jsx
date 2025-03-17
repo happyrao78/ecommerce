@@ -104,8 +104,9 @@ const Navbar = ({ token, isOpen }) => {
         }`}
     >
       {/* Improved frosted glass effect with gradient */}
-      <div className="absolute inset-0 bg-gradient-to-r from-gray-900/95 via-gray-900/90 to-gray-800/95 backdrop-blur-md border-b border-gray-800 shadow-lg"></div>
-
+      <div className="absolute inset-0 bg-gray-900 shadow-lg"></div>
+      <div className="absolute inset-0 bg-gradient-to-b from-blue-900/20 to-transparent pointer-events-none opacity-40 z-0"></div>
+      
       <div className="relative flex items-center justify-between h-20 px-6">
         {/* Left section - Page title and breadcrumbs with improved styling */}
         <div className="flex items-center">

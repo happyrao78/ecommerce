@@ -2,17 +2,22 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { backendUrl, currency } from '../App';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { 
     ChartBarIcon, 
     CurrencyDollarIcon, 
     UserGroupIcon, 
     DocumentTextIcon 
 } from '@heroicons/react/24/outline';
-
+import Hero from '../../../frontend/src/components/Hero';
+import BannerSlider from "./ImageSlider.jsx";
+import { toast } from 'react-toastify';
+import Cat from "../assets/admin_assets/cat.png";
 
 const renderOrdersList = () => {
     return (
       <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+        
         {filteredOrders.length === 0 ? (
           <div className="p-12 text-center">
             <Package size={48} className="mx-auto text-gray-300 mb-4" />
@@ -80,21 +85,6 @@ const renderOrdersList = () => {
                       </div>
                     </div>
 
-                    {/* Middle Column: Shipping Address */}
-                    {/* <div className="col-span-12 md:col-span-4">
-                      <div className="text-sm">
-                        <div className="flex items-center mb-2">
-                          <MapPin size={16} className="text-gray-400 mr-2" />
-                          <span className="text-gray-700 font-medium">Shipping Address</span>
-                        </div>
-                        <p className="text-gray-600 ml-6">
-                          {order.address.street}, {order.address.city}
-                        </p>
-                        <p className="text-gray-600 ml-6">
-                          {order.address.state}, {order.address.country} {order.address.zipcode}
-                        </p>
-                      </div>
-                    </div> */}
 
                     {/* Right Column: Amount & Payment Info */}
                     <div className="col-span-12 md:col-span-4">
@@ -124,6 +114,114 @@ const renderOrdersList = () => {
       </div>
     );
   };
+
+  const CategorySlider = ({token}) => {
+    const [scrollPosition, setScrollPosition] = useState(0);
+    const [categories, setCategories] = useState([]);
+   
+const [categoriesLoading, setCategoriesLoading] = useState(true);
+
+const fetchCategories = async () => {
+  setCategoriesLoading(true);
+  try {
+    const response = await axios.get(
+      `${backendUrl}/api/category/getSubCategory`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    
+    if (response.data.success) {
+      setCategories(response.data.categories);
+    
+    } else {
+      toast.error('Failed to fetch categories');
+    }
+  } catch (error) {
+    console.error(error);
+    toast.error('Error occurred while fetching categories');
+  } finally {
+    setCategoriesLoading(false);
+  }
+};
+useEffect(() => {
+  fetchCategories();
+}, [token]);
+    
+    const scroll = (direction) => {
+      const container = document.getElementById('category-container');
+      const scrollAmount = direction === 'left' ? -200 : 200;
+      container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      setScrollPosition(container.scrollLeft + scrollAmount);
+    };
+  
+    if (categoriesLoading) {
+      return (
+        <div className="relative mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold text-gray-800">Shop by Category</h2>
+          </div>
+          <div className="flex justify-center items-center h-24">
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+          </div>
+        </div>
+      );
+    }
+  
+    return (
+      <div className="relative mb-8">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-semibold text-gray-800">Shop by Category</h2>
+        </div>
+        
+        <div className="relative">
+          <button 
+            onClick={() => scroll('left')}
+            className="absolute left-0 top-1/2 -translate-y-1/2 bg-white rounded-full p-2 shadow-md z-10"
+            style={{ display: scrollPosition <= 0 ? 'none' : 'block' }}
+          >
+            <ChevronLeftIcon className="h-5 w-5 text-gray-600" />
+          </button>
+          
+          <div 
+            id="category-container"
+            className="flex  overflow-x-auto pb-4 scrollbar-hide"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            onScroll={(e) => setScrollPosition(e.target.scrollLeft)}
+          >
+            {categories.map((category) => (
+              <div key={category.category} className="flex flex-col items-center space-y-2 mx-auto cursor-pointer">
+                <div className="w-24 h-24 rounded-full overflow-hidden border border-gray-200">
+                  <img 
+                    src={category.image}
+                    alt={category.category} 
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <span className="text-sm text-gray-700 text-center">{category.category}</span>
+              </div>
+            ))}
+          </div>
+          
+          <button 
+            onClick={() => scroll('right')}
+            className="absolute right-0 top-1/2 -translate-y-1/2 bg-white rounded-full p-2 shadow-md z-10"
+          >
+            <ChevronRightIcon className="h-5 w-5 text-gray-600" />
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+// Add this to your component
+const scrollbarStyles = `
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+`;
   
 const Dashboard = ({ token }) => {
     const [loading, setLoading] = useState(true);
@@ -134,6 +232,7 @@ const Dashboard = ({ token }) => {
         userCount: []
     });
     const [recentOrders, setRecentOrders] = useState([]);
+
 
     const formatDate = (timestamp) => {
         const date = new Date(timestamp);
@@ -256,7 +355,15 @@ useEffect(() => {
 
     return (
         <div className="container mx-auto px-2 py-8">
-            <div className="grid grid-cols-4 gap-6 mb-8">
+        <style>{scrollbarStyles}</style>
+        
+        {/* Banner Slider */}
+        <BannerSlider />
+        
+        {/* Category Slider */}
+        <CategorySlider />
+            <div className="grid grid-cols-3 gap-6 mb-8">
+            
                 {/* Total Amount Card */}
                 <div className="bg-white shadow-md rounded-lg p-6">
                     <div className="flex items-center justify-between">
@@ -293,21 +400,6 @@ useEffect(() => {
                     </div>
                 </div>
 
-                {/*Total visitors  */}
-                {/* <div className="bg-white shadow-md rounded-lg p-6">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <h3 className="text-sm font-medium text-gray-500 flex items-center">
-                                <DocumentTextIcon className="h-5 w-5 mr-2 text-blue-500" />
-                                Total Visitors
-                            </h3>
-                        </div>
-                        <div className="text-green-500 flex items-center text-sm">
-                            1.56% ↑
-                        </div>
-                    </div>
-                </div> */}
-
                 {/* Total Users Card */}
                 <div className="bg-white shadow-md rounded-lg p-6">
                     <div className="flex items-center justify-between">
@@ -324,10 +416,12 @@ useEffect(() => {
                             0.00% →
                         </div>
                     </div>
+                    
                 </div>
                 
+                
             </div>
-
+            
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Total Order Value Chart */}
                 <div className="bg-white shadow-md rounded-lg p-2 w-full">
@@ -393,5 +487,4 @@ useEffect(() => {
         </div>
     );
 };
-
 export default Dashboard;
