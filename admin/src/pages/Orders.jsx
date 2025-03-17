@@ -686,14 +686,14 @@ const TrackingLinkModal = () => (
     </div>
 )}
 
-                <div className="mt-4 flex items-center justify-end">
+                {/* <div className="mt-4 flex items-center justify-end">
                   <button
                     onClick={() => window.print()}
                     className="text-blue-600 hover:text-blue-800 text-sm font-medium"
                   >
                     Print Order Details
                   </button>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
