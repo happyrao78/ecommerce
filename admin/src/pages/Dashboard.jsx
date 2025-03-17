@@ -9,10 +9,8 @@ import {
     UserGroupIcon, 
     DocumentTextIcon 
 } from '@heroicons/react/24/outline';
-import Hero from '../../../frontend/src/components/Hero';
 import BannerSlider from "./ImageSlider.jsx";
 import { toast } from 'react-toastify';
-import Cat from "../assets/admin_assets/cat.png";
 
 const renderOrdersList = () => {
   return (
