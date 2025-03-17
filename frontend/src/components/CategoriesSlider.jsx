@@ -21,7 +21,7 @@ const CategoriesSlider = () => {
         Object.keys(subCategoryData).length > 0
             ? Object.entries(subCategoryData).flatMap(([category, subcategories]) => [
                 // First add the main category
-                { title: category.charAt(0).toUpperCase() + category.slice(1), image: categoryslider1},
+                { title: category.charAt(0).toUpperCase() + category.slice(1), image: category.image},
                 // Then add subcategories (indented or with a different style)
                 
             ])

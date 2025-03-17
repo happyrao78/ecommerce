@@ -134,77 +134,7 @@ const ShopContextProvider = (props) => {
         return totalAmount;
     };
 
-    // const getCartCount = () => {
-    //     let totalCount = 0;
-
-    //     try {
-    //         for (const itemId in cartItems) {
-    //             const item = cartItems[itemId];
-    //             if (item && item.quantity > 0) {
-    //                 totalCount += item.quantity;
-    //             }
-    //         }
-    //     } catch (error) {
-    //         console.error(error);
-    //         toast.error(error.message);
-    //     }
-
-    //     return totalCount;
-    // };
-
-    // const updateQuantity = async (itemId, quantity, selectedAttributeValues) => {
-    //     let cartData = structuredClone(cartItems);
-
-    //     if (cartData[itemId]) {
-    //         cartData[itemId].quantity = quantity;
-
-    //         // Ensure attributes are also updated if provided
-    //         if (selectedAttributeValues) {
-    //             cartData[itemId].attributes = selectedAttributeValues;
-    //         }
-    //     }
-
-    //     setCartItems(cartData);
-
-    //     if (token) {
-    //         try {
-    //             const response = await axios.post(backendUrl + "/api/cart/update",
-    //                 { itemId, quantity, selectedAttributeValues },
-    //                 { headers: { token } }
-    //             );
-
-    //             if (response.data.message) {
-    //                 toast.success(response.data.message);
-    //             }
-    //         } catch (error) {
-    //             console.log(error);
-    //             toast.error(error.message);
-    //         }
-    //     }
-    // };
-
-    // const getCartAmount = () => {
-    //     let totalAmount = 0;
-
-    //     for (const itemId in cartItems) {
-    //         const item = cartItems[itemId];
-
-    //         try {
-    //             if (item && item.quantity > 0) {
-    //                 // Find the product details for the current itemId
-    //                 const itemInfo = products.find((product) => product._id === itemId);
-    //                 if (itemInfo) {
-    //                     totalAmount += itemInfo.price * item.quantity;
-    //                 }
-    //             }
-    //         } catch (error) {
-    //             console.error(error);
-    //         }
-    //     }
-
-    //     return totalAmount;
-    // };
-
+   
 
     const getProductsData = async () => {
         try {
@@ -230,6 +160,7 @@ const ShopContextProvider = (props) => {
     const getSubCategoryData = async () => {
         try {
             const response = await axios.get(`${backendUrl}/api/category/getSubCategory`);
+            console.log("SubCategory",response.data);
             if (response.data.success) {
                 const subCategoryData = response.data.categories.reduce((acc, category) => {
                     acc[category.category] = category.subcategories;
@@ -246,117 +177,7 @@ const ShopContextProvider = (props) => {
         }
     };
 
-    // getSubCategoryData();
-
-    // Add to wishlist
-    // const addToWishlist = async (itemId) => {
-    //     let wishlistData = structuredClone(wishlistItems);
-
-    //     // In wishlist we just need to track if item exists (value 1)
-    //     wishlistData[itemId] = 1;
-
-    //     setWishlistItems(wishlistData);
-
-    //     if (token) {
-    //         try {
-    //             const response = await axios.post(
-    //                 backendUrl + "/api/wishlist/add",
-    //                 { itemId },
-    //                 { headers: { token } }
-    //             );
-    //             if (response.data.message) {
-    //                 toast.success(response.data.message);
-    //             }
-    //         } catch (error) {
-    //             console.log(error);
-    //             toast.error(error.message);
-    //         }
-    //     }
-    // };
-
-
-    // // Remove from wishlist
-    // const removeFromWishlist = async (itemId) => {
-    //     let wishlistData = structuredClone(wishlistItems);
-
-    //     if (wishlistData[itemId]) {
-    //         delete wishlistData[itemId];
-    //         setWishlistItems(wishlistData);
-
-    //         if (token) {
-    //             try {
-    //                 const response = await axios.post(
-    //                     backendUrl + "/api/wishlist/remove",
-    //                     { itemId },
-    //                     { headers: { token } }
-    //                 );
-    //                 if (response.data.message) {
-    //                     toast.success(response.data.message);
-    //                 }
-    //             } catch (error) {
-    //                 console.log(error);
-    //                 toast.error(error.message);
-    //             }
-    //         }
-    //     }
-    // };
-
-
-    // // Move from wishlist to cart
-    // const moveToCart = async (itemId) => {
-    //     if (wishlistItems[itemId]) {
-    //         // First add to cart
-    //         await addToCart(itemId);
-
-    //         // Then remove from wishlist
-    //         await removeFromWishlist(itemId);
-
-    //         if (token) {
-    //             try {
-    //                 const response = await axios.post(
-    //                     backendUrl + "/api/wishlist/move-to-cart",
-    //                     { itemId },
-    //                     { headers: { token } }
-    //                 );
-    //                 if (response.data.message) {
-    //                     toast.success(response.data.message);
-    //                 }
-    //             } catch (error) {
-    //                 console.log(error);
-    //                 toast.error(error.message);
-    //             }
-    //         }
-    //     }
-    // };
-
-    // // Get wishlist count
-    // const getWishlistCount = () => {
-    //     return Object.keys(wishlistItems).length;
-    // };
-
-    // // Check if item is in wishlist
-    // const isInWishlist = (itemId) => {
-    //     return !!wishlistItems[itemId];
-    // };
-
-    // // Get user's wishlist from the backend
-    // const getUserWishlist = async (token) => {
-    //     try {
-    //         const response = await axios.post(
-    //             backendUrl + "/api/wishlist/get",
-    //             {},
-    //             { headers: { token } }
-    //         );
-
-    //         if (response.data.success) {
-    //             setWishlistItems(response.data.wishlistData);
-    //         }
-    //     } catch (error) {
-    //         console.log(error);
-    //         toast.error(error.message);
-    //     }
-    // };
-
+ 
 // Add to wishlist
 const addToWishlist = async (itemId, selectedAttributeValues) => {
     let wishlistData = structuredClone(wishlistItems);

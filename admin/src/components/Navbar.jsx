@@ -121,7 +121,7 @@ const Navbar = ({ token, isOpen }) => {
         </div>
 
         {/* Middle section - Search bar */}
-        <div className={`hidden md:flex items-center relative max-w-xl w-1/3 transition-all ${searchFocused ? 'w-2/5' : ''}`}>
+        {/* <div className={`hidden md:flex items-center relative max-w-xl w-1/3 transition-all ${searchFocused ? 'w-2/5' : ''}`}>
           <div className={`flex items-center w-full overflow-hidden transition-all duration-300 bg-gray-800 ${searchFocused
               ? 'border border-blue-500 shadow-lg shadow-blue-500/20'
               : 'border border-white'
@@ -135,7 +135,7 @@ const Navbar = ({ token, isOpen }) => {
               onBlur={() => setSearchFocused(false)}
             />
           </div>
-        </div>
+        </div> */}
 
         {/* Right section - Actions and profile with enhanced styling */}
         <div className="flex items-center space-x-1 md:space-x-3">
