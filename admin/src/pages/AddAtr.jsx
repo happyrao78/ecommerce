@@ -69,13 +69,13 @@ const AddAtr = () => {
       <div className="bg-white rounded-lg shadow-sm p-6">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Add Attribute</h1>
-          <div className="flex items-center">
+          {/* <div className="flex items-center">
             <Link to="/dashboard" className="text-gray-600 hover:text-gray-800">Dashboard</Link>
             <span className="mx-2 text-gray-400">&gt;</span>
             <Link to="/attributes" className="text-gray-600 hover:text-gray-800">Attributes</Link>
             <span className="mx-2 text-gray-400">&gt;</span>
             <span className="text-gray-400">Add attribute</span>
-          </div>
+          </div> */}
         </div>
 
         {error && (

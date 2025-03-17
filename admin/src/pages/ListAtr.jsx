@@ -159,49 +159,42 @@ const ListAtr = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="bg-white rounded-lg shadow-sm p-6">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">Add Attribute</h1>
-          <div className="flex items-center">
-            <Link to="/dashboard" className="text-gray-600 hover:text-gray-800">Dashboard</Link>
-            <span className="mx-2 text-gray-400">&gt;</span>
-            <Link to="/list-attribute" className="text-gray-600 hover:text-gray-800">Attributes</Link>
-            <span className="mx-2 text-gray-400">&gt;</span>
-            <span className="text-gray-400">List attributes</span>
-          </div>
+    <div className="p-2 md:p-6 bg-gray-50 min-h-screen">
+      <div className="bg-white rounded-lg shadow-sm p-3 md:p-6">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 md:mb-6">
+          <h1 className="text-xl md:text-2xl font-bold mb-2 md:mb-0">Add Attribute</h1>
         </div>
 
-        <div className="flex justify-between items-center mb-6">
-          <div className="flex items-center">
-            <span className="mr-2 text-gray-600">Showing</span>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 md:mb-6 gap-3">
+          <div className="flex items-center w-full md:w-auto">
+            <span className="mr-2 text-gray-600 text-sm md:text-base">Showing</span>
             <select
-              className="border rounded px-2 py-1"
+              className="border rounded px-1 py-1 text-sm md:text-base"
               value={entriesPerPage}
               onChange={(e) => setEntriesPerPage(Number(e.target.value))}
             >
-              <option value={10}>5</option>
-              <option value={25}>10</option>
-              <option value={50}>15</option>
-              <option value={100}>20</option>
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={15}>15</option>
+              <option value={20}>20</option>
             </select>
-            <span className="ml-2 text-gray-600">entries</span>
+            <span className="ml-2 text-gray-600 text-sm md:text-base">entries</span>
           </div>
 
-          <div className="relative">
+          <div className="relative w-full md:w-auto">
             <input
               type="text"
               placeholder="Search here..."
-              className="border rounded px-3 py-2 pl-10 w-64"
+              className="border rounded px-3 py-1 pl-8 w-full md:w-64 text-sm md:text-base"
               value={searchTerm}
               onChange={handleSearch}
             />
-            <FaSearch className="absolute left-3 top-3 text-gray-400" />
+            <FaSearch className="absolute left-2 top-2 text-gray-400" />
           </div>
 
           <Link 
             to="/add-attribute" 
-            className="flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+            className="flex items-center px-3 py-1 md:px-4 md:py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition w-full md:w-auto justify-center md:justify-start text-sm md:text-base"
           >
             <span className="mr-1">+</span>
             Add new
@@ -214,23 +207,23 @@ const ListAtr = () => {
           <div className="text-center text-red-500 py-4">{error}</div>
         ) : (
           <>
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto -mx-3 md:mx-0">
               <table className="min-w-full bg-white">
                 <thead>
                   <tr className="bg-gray-100">
-                    <th className="py-3 px-4 text-left">Category</th>
-                    <th className="py-3 px-4 text-left">Value</th>
-                    <th className="py-3 px-4 text-right">Action</th>
+                    <th className="py-2 px-2 md:py-3 md:px-4 text-left text-sm md:text-base">Category</th>
+                    <th className="py-2 px-2 md:py-3 md:px-4 text-left text-sm md:text-base">Value</th>
+                    <th className="py-2 px-2 md:py-3 md:px-4 text-right text-sm md:text-base">Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   {currentAttributes.map((attribute) => (
                     <tr key={attribute._id} className="border-b hover:bg-gray-50">
-                      <td className="py-3 px-4">
+                      <td className="py-2 px-2 md:py-3 md:px-4 text-sm md:text-base">
                         {editingAttributeId === attribute._id ? (
                           <input
                             type="text"
-                            className="w-full border border-gray-300 rounded px-2 py-1"
+                            className="w-full border border-gray-300 rounded px-2 py-1 text-sm md:text-base"
                             value={editingAttribute.attributeName}
                             onChange={updateAttributeName}
                           />
@@ -238,7 +231,7 @@ const ListAtr = () => {
                           attribute.attributeName
                         )}
                       </td>
-                      <td className="py-3 px-4">
+                      <td className="py-2 px-2 md:py-3 md:px-4 text-sm md:text-base">
                         {editingAttributeId === attribute._id ? (
                           <div className="space-y-2">
                             {editingAttribute.attributeValues.map((value, index) => (
@@ -247,7 +240,7 @@ const ListAtr = () => {
                                   <>
                                     <input
                                       type="text"
-                                      className="flex-grow border border-gray-300 rounded px-2 py-1"
+                                      className="flex-grow border border-gray-300 rounded px-2 py-1 text-sm md:text-base"
                                       value={newValue}
                                       onChange={(e) => setNewValue(e.target.value)}
                                     />
@@ -255,7 +248,7 @@ const ListAtr = () => {
                                       onClick={saveEditedValue}
                                       className="ml-1 text-green-500 hover:text-green-700"
                                     >
-                                      <FaSave size={14} />
+                                      <FaSave size={12} className="md:text-base" />
                                     </button>
                                     <button
                                       onClick={() => {
@@ -264,7 +257,7 @@ const ListAtr = () => {
                                       }}
                                       className="ml-1 text-red-500 hover:text-red-700"
                                     >
-                                      <FaTimes size={14} />
+                                      <FaTimes size={12} className="md:text-base" />
                                     </button>
                                   </>
                                 ) : (
@@ -274,13 +267,13 @@ const ListAtr = () => {
                                       onClick={() => startEditingValue(index, value)}
                                       className="ml-1 text-blue-500 hover:text-blue-700"
                                     >
-                                      <FaEdit size={14} />
+                                      <FaEdit size={12} className="md:text-base" />
                                     </button>
                                     <button
                                       onClick={() => removeAttributeValue(index)}
                                       className="ml-1 text-red-500 hover:text-red-700"
                                     >
-                                      <FaTrash size={14} />
+                                      <FaTrash size={12} className="md:text-base" />
                                     </button>
                                   </>
                                 )}
@@ -289,7 +282,7 @@ const ListAtr = () => {
                             <div className="flex items-center mt-2">
                               <input
                                 type="text"
-                                className="flex-grow border border-gray-300 rounded px-2 py-1"
+                                className="flex-grow border border-gray-300 rounded px-2 py-1 text-sm md:text-base"
                                 value={newValue}
                                 onChange={(e) => setNewValue(e.target.value)}
                                 placeholder="Add new value"
@@ -300,15 +293,17 @@ const ListAtr = () => {
                                 className="ml-1 text-green-500 hover:text-green-700"
                                 disabled={editingValueIndex !== -1}
                               >
-                                <FaPlus size={14} />
+                                <FaPlus size={12} className="md:text-base" />
                               </button>
                             </div>
                           </div>
                         ) : (
-                          attribute.attributeValues.join(', ')
+                          <div className="break-words max-w-xs md:max-w-md">
+                            {attribute.attributeValues.join(', ')}
+                          </div>
                         )}
                       </td>
-                      <td className="py-3 px-4 text-right">
+                      <td className="py-2 px-2 md:py-3 md:px-4 text-right">
                         <div className="flex justify-end">
                           {editingAttributeId === attribute._id ? (
                             <>
@@ -317,37 +312,31 @@ const ListAtr = () => {
                                 className="text-green-500 hover:text-green-700 mx-1"
                                 title="Save"
                               >
-                                <FaSave />
+                                <FaSave size={14} className="md:text-base" />
                               </button>
                               <button
                                 onClick={cancelEditing}
                                 className="text-red-500 hover:text-red-700 mx-1"
                                 title="Cancel"
                               >
-                                <FaTimes />
+                                <FaTimes size={14} className="md:text-base" />
                               </button>
                             </>
                           ) : (
                             <>
-                              {/* <button
-                                className="text-blue-500 hover:text-blue-700 mx-1"
-                                title="View"
-                              >
-                                <FaEye />
-                              </button> */}
                               <button
                                 onClick={() => startEditing(attribute)}
                                 className="text-green-500 hover:text-green-700 mx-1"
                                 title="Edit"
                               >
-                                <FaEdit />
+                                <FaEdit size={14} className="md:text-base" />
                               </button>
                               <button
                                 onClick={() => handleDelete(attribute._id)}
                                 className="text-red-500 hover:text-red-700 mx-1"
                                 title="Delete"
                               >
-                                <FaTrash />
+                                <FaTrash size={14} className="md:text-base" />
                               </button>
                             </>
                           )}
@@ -359,15 +348,15 @@ const ListAtr = () => {
               </table>
             </div>
 
-            <div className="flex justify-between items-center mt-6">
-              <div className="text-gray-600">
+            <div className="flex flex-col md:flex-row justify-between items-center mt-4 md:mt-6 gap-3">
+              <div className="text-gray-600 text-sm md:text-base text-center md:text-left">
                 Showing {indexOfFirstEntry + 1} to {Math.min(indexOfLastEntry, filteredAttributes.length)} of {filteredAttributes.length} entries
               </div>
-              <div className="flex">
+              <div className="flex flex-wrap justify-center">
                 <button
                   onClick={() => paginate(currentPage - 1)}
                   disabled={currentPage === 1}
-                  className="mx-1 px-3 py-1 rounded border disabled:opacity-50"
+                  className="mx-1 px-2 py-1 rounded border disabled:opacity-50 text-sm md:text-base"
                 >
                   &lt;
                 </button>
@@ -375,7 +364,7 @@ const ListAtr = () => {
                   <button
                     key={i + 1}
                     onClick={() => paginate(i + 1)}
-                    className={`mx-1 px-3 py-1 rounded ${
+                    className={`mx-1 px-2 py-1 rounded text-sm md:text-base ${
                       currentPage === i + 1 ? 'bg-blue-500 text-white' : 'border'
                     }`}
                   >
@@ -385,7 +374,7 @@ const ListAtr = () => {
                 <button
                   onClick={() => paginate(currentPage + 1)}
                   disabled={currentPage === Math.ceil(filteredAttributes.length / entriesPerPage)}
-                  className="mx-1 px-3 py-1 rounded border disabled:opacity-50"
+                  className="mx-1 px-2 py-1 rounded border disabled:opacity-50 text-sm md:text-base"
                 >
                   &gt;
                 </button>

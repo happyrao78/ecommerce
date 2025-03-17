@@ -36,14 +36,14 @@ const App = () => {
   }, [token])
 
   return (
-    <div className='bg-gray-200 min-h-screen'>
+    <div className='bg-white w-full '>
       <ToastContainer />
       {token === "" ? <Login setToken={setToken} /> :
         <>
           <div className='flex'>
             <Sidebar setToken={setToken} isOpen={isOpen} setIsOpen={setIsOpen} />
           
-            <div className={`min-h-screen transition-all duration-300 ${isOpen ? 'ml-72' : 'ml-24'} w-full`}>
+            <div className={`min-h-screen transition-all duration-300 ${isOpen ? 'ml-72' : 'xs:ml-0 lg:ml-24'} w-full`}>
               <Navbar setToken={setToken} isOpen={isOpen} />
               <div className="p-4 mt-12 mb-5">
                 <Routes>

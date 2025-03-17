@@ -163,9 +163,59 @@ const ListDynamic = ({ token }) => {
         }
     };
 
+    // Card view for mobile screens
+    const renderMobileView = () => {
+        return dynamics.map((dynamic) => (
+            <div key={dynamic._id} className="bg-white rounded-lg shadow p-4 mb-4 border border-gray-200">
+                <div className="flex flex-wrap gap-2 mb-3">
+                    {dynamic.image && dynamic.image.map((img, index) => (
+                        <img 
+                            key={index}
+                            src={img} 
+                            alt={`Dynamic ${dynamic.title} - ${index}`}
+                            className="w-16 h-16 object-cover rounded-md border border-gray-300"
+                        />
+                    ))}
+                </div>
+                
+                <h3 className="font-medium text-lg mb-1">{dynamic.title}</h3>
+                
+                <div className="text-gray-600 mb-2 line-clamp-2">{dynamic.subtitle}</div>
+                
+                <div className="text-blue-600 text-sm mb-4 truncate">
+                    {dynamic.redirectLink}
+                </div>
+                
+                <div className="flex gap-2 justify-end">
+                    <button 
+                        onClick={() => handleView(dynamic)}
+                        className="p-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+                        aria-label="View"
+                    >
+                        <FaEye />
+                    </button>
+                    <button 
+                        onClick={() => handleEditClick(dynamic)}
+                        className="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                        aria-label="Edit"
+                    >
+                        <FaEdit />
+                    </button>
+                    <button 
+                        onClick={() => handleDeleteClick(dynamic)}
+                        className="p-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+                        aria-label="Delete"
+                    >
+                        <FaTrash />
+                    </button>
+                </div>
+            </div>
+        ));
+    };
+
     return (
-        <div className="bg-white rounded-lg shadow-md p-6 max-w-6xl mx-auto my-8">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-6">Dynamic Components</h2>
+        <div className="bg-white rounded-lg shadow-md p-3 sm:p-6 max-w-6xl mx-auto my-4 sm:my-8">
+            <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4 sm:mb-6">Dynamic Components</h2>
             
             {loading && (
                 <div className="flex justify-center my-6">
@@ -183,81 +233,89 @@ const ListDynamic = ({ token }) => {
             )}
             
             {!loading && dynamics.length > 0 && (
-                <div className="overflow-x-auto">
-                    <table className="min-w-full bg-white border border-gray-200">
-                        <thead>
-                            <tr className="bg-gray-100">
-                                <th className="py-3 px-4 border-b text-left">Images</th>
-                                <th className="py-3 px-4 border-b text-left">Title</th>
-                                <th className="py-3 px-4 border-b text-left">Subtitle</th>
-                                <th className="py-3 px-4 border-b text-left">Link</th>
-                                <th className="py-3 px-4 border-b text-center">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {dynamics.map((dynamic) => (
-                                <tr key={dynamic._id} className="hover:bg-gray-50">
-                                    <td className="py-3 px-4 border-b">
-                                        <div className="flex gap-2">
-                                            {dynamic.image && dynamic.image.map((img, index) => (
-                                                <img 
-                                                    key={index}
-                                                    src={img} 
-                                                    alt={`Dynamic ${dynamic.title} - ${index}`}
-                                                    className="w-16 h-16 object-cover rounded-md border border-gray-300"
-                                                />
-                                            ))}
-                                        </div>
-                                    </td>
-                                    <td className="py-3 px-4 border-b">{dynamic.title}</td>
-                                    <td className="py-3 px-4 border-b">
-                                        <div className="max-w-xs truncate">{dynamic.subtitle}</div>
-                                    </td>
-                                    <td className="py-3 px-4 border-b">
-                                        <div className="max-w-xs truncate">{dynamic.redirectLink}</div>
-                                    </td>
-                                    <td className="py-3 px-4 border-b">
-                                        <div className="flex justify-center gap-2">
-                                            <button 
-                                                onClick={() => handleView(dynamic)}
-                                                className="p-2 bg-green-500 text-white rounded-md hover:bg-green-600"
-                                                title="View"
-                                            >
-                                                <FaEye />
-                                            </button>
-                                            <button 
-                                                onClick={() => handleEditClick(dynamic)}
-                                                className="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-                                                title="Edit"
-                                            >
-                                                <FaEdit />
-                                            </button>
-                                            <button 
-                                                onClick={() => handleDeleteClick(dynamic)}
-                                                className="p-2 bg-red-500 text-white rounded-md hover:bg-red-600"
-                                                title="Delete"
-                                            >
-                                                <FaTrash />
-                                            </button>
-                                        </div>
-                                    </td>
+                <>
+                    {/* Mobile view (card-based layout) */}
+                    <div className="md:hidden">
+                        {renderMobileView()}
+                    </div>
+                    
+                    {/* Desktop view (table-based layout) */}
+                    <div className="hidden md:block overflow-x-auto">
+                        <table className="min-w-full bg-white border border-gray-200">
+                            <thead>
+                                <tr className="bg-gray-100">
+                                    <th className="py-3 px-4 border-b text-left">Images</th>
+                                    <th className="py-3 px-4 border-b text-left">Title</th>
+                                    <th className="py-3 px-4 border-b text-left">Subtitle</th>
+                                    <th className="py-3 px-4 border-b text-left">Link</th>
+                                    <th className="py-3 px-4 border-b text-center">Actions</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                            </thead>
+                            <tbody>
+                                {dynamics.map((dynamic) => (
+                                    <tr key={dynamic._id} className="hover:bg-gray-50">
+                                        <td className="py-3 px-4 border-b">
+                                            <div className="flex gap-2">
+                                                {dynamic.image && dynamic.image.map((img, index) => (
+                                                    <img 
+                                                        key={index}
+                                                        src={img} 
+                                                        alt={`Dynamic ${dynamic.title} - ${index}`}
+                                                        className="w-16 h-16 object-cover rounded-md border border-gray-300"
+                                                    />
+                                                ))}
+                                            </div>
+                                        </td>
+                                        <td className="py-3 px-4 border-b">{dynamic.title}</td>
+                                        <td className="py-3 px-4 border-b">
+                                            <div className="max-w-xs truncate">{dynamic.subtitle}</div>
+                                        </td>
+                                        <td className="py-3 px-4 border-b">
+                                            <div className="max-w-xs truncate">{dynamic.redirectLink}</div>
+                                        </td>
+                                        <td className="py-3 px-4 border-b">
+                                            <div className="flex justify-center gap-2">
+                                                <button 
+                                                    onClick={() => handleView(dynamic)}
+                                                    className="p-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+                                                    aria-label="View"
+                                                >
+                                                    <FaEye />
+                                                </button>
+                                                <button 
+                                                    onClick={() => handleEditClick(dynamic)}
+                                                    className="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                                                    aria-label="Edit"
+                                                >
+                                                    <FaEdit />
+                                                </button>
+                                                <button 
+                                                    onClick={() => handleDeleteClick(dynamic)}
+                                                    className="p-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+                                                    aria-label="Delete"
+                                                >
+                                                    <FaTrash />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </>
             )}
             
-            {/* Edit Modal */}
+            {/* Edit Modal - Responsive */}
             {showEditModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-                        <h3 className="text-xl font-semibold mb-4">Edit Dynamic Component</h3>
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+                        <h3 className="text-lg sm:text-xl font-semibold mb-4">Edit Dynamic Component</h3>
                         
                         <form onSubmit={handleEditSubmit}>
                             <div className="mb-4">
                                 <label className="block font-medium mb-2">Current Images</label>
-                                <div className="flex gap-2 mb-2">
+                                <div className="flex flex-wrap gap-2 mb-2">
                                     {selectedDynamic.image && selectedDynamic.image.map((img, index) => (
                                         <img 
                                             key={index}
@@ -268,9 +326,9 @@ const ListDynamic = ({ token }) => {
                                     ))}
                                 </div>
                                 
-                                <label className="block font-medium mb-2">Upload New Images (Optional)</label>
-                                <div className="flex gap-2">
-                                    <div>
+                                <label className="block font-medium mb-2 mt-4">Upload New Images (Optional)</label>
+                                <div className="flex flex-col sm:flex-row gap-4">
+                                    <div className="w-full sm:w-1/2">
                                         <input 
                                             type="file" 
                                             name="image1" 
@@ -293,7 +351,7 @@ const ListDynamic = ({ token }) => {
                                         )}
                                     </div>
                                     
-                                    <div>
+                                    <div className="w-full sm:w-1/2">
                                         <input 
                                             type="file" 
                                             name="image2" 
@@ -353,18 +411,18 @@ const ListDynamic = ({ token }) => {
                                 />
                             </div>
                             
-                            <div className="flex justify-end gap-2 mt-6">
+                            <div className="flex flex-col sm:flex-row sm:justify-end gap-2 mt-6">
                                 <button
                                     type="button"
                                     onClick={() => setShowEditModal(false)}
-                                    className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400"
+                                    className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 w-full sm:w-auto mb-2 sm:mb-0"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={loading}
-                                    className={`px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+                                    className={`px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 w-full sm:w-auto ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
                                 >
                                     {loading ? 'Updating...' : 'Update Component'}
                                 </button>
@@ -374,24 +432,24 @@ const ListDynamic = ({ token }) => {
                 </div>
             )}
             
-            {/* Delete Confirmation Modal */}
+            {/* Delete Confirmation Modal - Responsive */}
             {showDeleteModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-6 w-full max-w-md">
-                        <h3 className="text-xl font-semibold mb-4">Confirm Delete</h3>
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-md">
+                        <h3 className="text-lg sm:text-xl font-semibold mb-4">Confirm Delete</h3>
                         <p className="mb-6">Are you sure you want to delete the dynamic component "{selectedDynamic.title}"? This action cannot be undone.</p>
                         
-                        <div className="flex justify-end gap-2">
+                        <div className="flex flex-col sm:flex-row sm:justify-end gap-2">
                             <button
                                 onClick={() => setShowDeleteModal(false)}
-                                className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400"
+                                className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 w-full sm:w-auto mb-2 sm:mb-0"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={handleDeleteConfirm}
                                 disabled={loading}
-                                className={`px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+                                className={`px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 w-full sm:w-auto ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
                             >
                                 {loading ? 'Deleting...' : 'Delete'}
                             </button>

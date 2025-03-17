@@ -5,18 +5,28 @@ import { assets } from "../assets/admin_assets/assets.js";
 import {
   Bell, MessageSquare, Search, Moon, Sun,
   ChevronDown, Settings, LogOut, User, HelpCircle,
-  Package, ShoppingCart, Clock
+  Package, ShoppingCart, Clock, Menu, X
 } from 'lucide-react';
 import { backendUrl } from '../App';
 
-const Navbar = ({ token, isOpen }) => {
+const Navbar = ({ token, isOpen, toggleSidebar,setToken }) => {
   const location = useLocation();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [searchFocused, setSearchFocused] = useState(false);
   const [recentOrders, setRecentOrders] = useState([]);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
+  // Handle responsive behavior
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const toggleProfileMenu = () => {
     setShowProfileMenu(!showProfileMenu);
@@ -27,6 +37,22 @@ const Navbar = ({ token, isOpen }) => {
     setShowNotifications(!showNotifications);
     if (showProfileMenu) setShowProfileMenu(false);
   };
+
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (showProfileMenu || showNotifications) {
+        // Check if click is outside the dropdowns
+        if (!event.target.closest('.dropdown-container')) {
+          setShowProfileMenu(false);
+          setShowNotifications(false);
+        }
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showProfileMenu, showNotifications]);
 
   useEffect(() => {
     const fetchRecentOrders = async () => {
@@ -100,19 +126,31 @@ const Navbar = ({ token, isOpen }) => {
 
   return (
     <div
-      className={`fixed top-0 z-40 transition-all duration-300 ${isOpen ? 'left-72 w-[calc(100%-18rem)]' : 'left-24 w-[calc(100%-6rem)]'
-        }`}
+      className={`fixed top-0 z-40 transition-all duration-300 ${
+        isMobile ? 'left-0 w-full' : 
+        isOpen ? 'left-72 w-[calc(100%-18rem)]' : 'left-24 w-[calc(100%-6rem)]'
+      }`}
     >
       {/* Improved frosted glass effect with gradient */}
       <div className="absolute inset-0 bg-gray-900 shadow-lg"></div>
       <div className="absolute inset-0 bg-gradient-to-b from-blue-900/20 to-transparent pointer-events-none opacity-40 z-0"></div>
       
-      <div className="relative flex items-center justify-between h-20 px-6">
-        {/* Left section - Page title and breadcrumbs with improved styling */}
+      <div className="relative flex items-center justify-between h-16 sm:h-20 px-3 sm:px-6">
+        {/* Left section - Menu toggle and page title */}
         <div className="flex items-center">
+          {/* Mobile menu toggle button */}
+          {isMobile && (
+            <button 
+              onClick={toggleSidebar}
+              className="mr-3 p-1 text-gray-400 hover:text-white rounded-lg hover:bg-gray-800/70 transition-all"
+            >
+              {isOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
+          )}
+          
           <div>
-            <h1 className="text-xl font-bold bg-gradient-to-r from-white to-blue-300 bg-clip-text text-transparent">{currentPage}</h1>
-            <div className="flex items-center text-xs text-gray-400">
+            <h1 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-white to-blue-300 bg-clip-text text-transparent">{currentPage}</h1>
+            <div className="hidden sm:flex items-center text-xs text-gray-400">
               <span>Home</span>
               <span className="mx-2">/</span>
               <span className="text-blue-400">{currentPage}</span>
@@ -120,37 +158,20 @@ const Navbar = ({ token, isOpen }) => {
           </div>
         </div>
 
-        {/* Middle section - Search bar */}
-        {/* <div className={`hidden md:flex items-center relative max-w-xl w-1/3 transition-all ${searchFocused ? 'w-2/5' : ''}`}>
-          <div className={`flex items-center w-full overflow-hidden transition-all duration-300 bg-gray-800 ${searchFocused
-              ? 'border border-blue-500 shadow-lg shadow-blue-500/20'
-              : 'border border-white'
-            } rounded-full px-4 py-2`}>
-            <Search size={18} className="text-gray-400 mr-2" />
-            <input
-              type="text"
-              placeholder="Search"
-              className="bg-transparent border-none text-white text-sm w-full focus:outline-none"
-              onFocus={() => setSearchFocused(true)}
-              onBlur={() => setSearchFocused(false)}
-            />
-          </div>
-        </div> */}
-
-        {/* Right section - Actions and profile with enhanced styling */}
+        {/* Right section - Actions and profile */}
         <div className="flex items-center space-x-1 md:space-x-3">
           {/* Notifications with dropdown */}
-          <div className="relative">
+          <div className="relative dropdown-container">
             <button
               onClick={toggleNotifications}
-              className="p-2 text-gray-400 hover:text-white rounded-full hover:bg-gray-800/70 transition-all duration-300 hover:shadow-md hover:shadow-blue-500/10"
+              className="p-1.5 sm:p-2 text-gray-400 hover:text-white rounded-full hover:bg-gray-800/70 transition-all duration-300 hover:shadow-md hover:shadow-blue-500/10"
             >
-              <Bell size={18} />
+              <Bell size={isMobile ? 16 : 18} />
               {recentOrders.length > 0 && (
-                <span className="absolute top-0 right-0 flex h-5 w-5">
-                  <span className="relative inline-flex rounded-full h-5 w-5 bg-gradient-to-r from-rose-500 to-pink-500">
+                <span className="absolute top-0 right-0 flex h-4 w-4 sm:h-5 sm:w-5">
+                  <span className="relative inline-flex rounded-full h-4 w-4 sm:h-5 sm:w-5 bg-gradient-to-r from-rose-500 to-pink-500">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-5 w-5 bg-gradient-to-r from-rose-500 to-pink-500 text-xs text-white items-center justify-center  ">
+                    <span className="relative inline-flex rounded-full h-4 w-4 sm:h-5 sm:w-5 bg-gradient-to-r from-rose-500 to-pink-500 text-xs text-white items-center justify-center">
                       {recentOrders.length}
                     </span>
                   </span>
@@ -160,7 +181,7 @@ const Navbar = ({ token, isOpen }) => {
 
             {/* Notifications dropdown */}
             {showNotifications && (
-              <div className="absolute right-0 mt-2 w-80 bg-gray-800 border border-gray-700 rounded-xl shadow-xl z-50 overflow-hidden">
+              <div className="absolute right-0 mt-2 w-64 sm:w-80 bg-gray-800 border border-gray-700 rounded-xl shadow-xl z-50 overflow-hidden">
                 <div className="p-3 border-b border-gray-700 flex justify-between items-center">
                   <h3 className="text-sm font-medium text-white">Notifications</h3>
                   <span className="text-xs px-2 py-1 bg-blue-600 text-white rounded-full">
@@ -169,8 +190,8 @@ const Navbar = ({ token, isOpen }) => {
                 </div>
 
                 {recentOrders.length > 0 ? (
-                  <div className="max-h-80 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 sidebar-scroll"
-
+                  <div 
+                    className="max-h-60 sm:max-h-80 overflow-y-auto sidebar-scroll"
                     style={{
                       scrollbarWidth: 'none',
                       msOverflowStyle: 'none',
@@ -180,10 +201,10 @@ const Navbar = ({ token, isOpen }) => {
                     <style
                       dangerouslySetInnerHTML={{
                         __html: `
-        .sidebar-scroll::-webkit-scrollbar {
-          display: none;
-        }
-      `
+                          .sidebar-scroll::-webkit-scrollbar {
+                            display: none;
+                          }
+                        `
                       }}
                     />
                     {recentOrders.map((order) => (
@@ -195,14 +216,10 @@ const Navbar = ({ token, isOpen }) => {
                           <div className="flex-1">
                             <div className="flex justify-between items-start">
                               <p className="text-sm font-medium text-white">New Order {formatOrderNumber(order._id)}</p>
-                              {/* <span className="text-xs text-gray-400">{formatDate(order.createdAt)}</span> */}
                             </div>
                             <p className="text-xs text-gray-400 mt-1">
                               Amount: ₹{order.amount.toLocaleString()}
                             </p>
-                            {/* <p className="text-xs text-gray-400">
-                              Items: {order.items.length}
-                            </p> */}
                           </div>
                         </div>
                       </div>
@@ -218,7 +235,6 @@ const Navbar = ({ token, isOpen }) => {
                   <button
                     className="w-full text-center text-xs text-blue-400 hover:text-blue-300 py-1"
                     onClick={() => {
-                      // Navigate to orders page
                       window.location.href = '/orders';
                     }}
                   >
@@ -229,22 +245,22 @@ const Navbar = ({ token, isOpen }) => {
             )}
           </div>
 
-          {/* Divider with glow effect */}
+          {/* Divider with glow effect - hide on mobile */}
           <div className="hidden md:block h-8 w-px bg-gradient-to-b from-gray-700 via-blue-700/30 to-gray-700"></div>
 
           {/* Profile dropdown with enhanced styling */}
-          <div className="relative">
+          <div className="relative dropdown-container">
             <button
               onClick={toggleProfileMenu}
-              className="flex items-center space-x-3 p-2 rounded-full hover:bg-gray-800/70 transition-all duration-300 text-gray-200 hover:shadow-md hover:shadow-blue-500/10"
+              className="flex items-center space-x-1 sm:space-x-3 p-1.5 sm:p-2 rounded-full hover:bg-gray-800/70 transition-all duration-300 text-gray-200 hover:shadow-md hover:shadow-blue-500/10"
             >
               <div className="relative">
                 <img
                   src={assets.logo}
                   alt="Profile"
-                  className="w-8 h-8 rounded-full border-2 border-gray-700 object-cover hover:border-blue-500 transition-all duration-300"
+                  className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 border-gray-700 object-cover hover:border-blue-500 transition-all duration-300"
                 />
-                <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500 border-2 border-gray-900"></div>
+                <div className="absolute bottom-0 right-0 h-2 w-2 sm:h-3 sm:w-3 rounded-full bg-green-500 border-2 border-gray-900"></div>
               </div>
               <div className="hidden md:block text-left">
                 <p className="text-sm font-medium text-white">Happy Yadav</p>
@@ -255,26 +271,11 @@ const Navbar = ({ token, isOpen }) => {
 
             {/* Enhanced dropdown menu */}
             {showProfileMenu && (
-              <div className="absolute right-0 mt-2 w-64 bg-gray-800 border border-gray-700 rounded-xl shadow-xl z-50 overflow-hidden">
+              <div className="absolute right-0 mt-2 w-56 sm:w-64 bg-gray-800 border border-gray-700 rounded-xl shadow-xl z-50 overflow-hidden">
                 <div className="p-4 border-b border-gray-700">
                   <p className="text-sm font-medium text-white">Happy Yadav</p>
                   <p className="text-xs text-gray-400">admin1234@gmail.com</p>
                 </div>
-
-                {/* <div className="p-2">
-                  <button className="flex items-center w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg transition-colors">
-                    <User size={16} className="mr-3 text-gray-400" />
-                    Profile
-                  </button>
-                  <button className="flex items-center w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg transition-colors">
-                    <Settings size={16} className="mr-3 text-gray-400" />
-                    Settings
-                  </button>
-                  <button className="flex items-center w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg transition-colors">
-                    <HelpCircle size={16} className="mr-3 text-gray-400" />
-                    Help Center
-                  </button>
-                </div> */}
 
                 <div className="p-2 border-t border-gray-700">
                   <button

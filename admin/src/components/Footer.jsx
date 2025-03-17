@@ -50,7 +50,7 @@ const Footer = () => {
           </div>
           
           <div className="flex items-center justify-center text-sm text-gray-300">
-            © {new Date().getFullYear()} Admin Dashboard. Designed with 
+            Designed with 
             <Heart 
               size={14} 
               className="text-pink-500 mx-1 fill-current" 
