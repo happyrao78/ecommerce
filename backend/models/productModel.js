@@ -13,6 +13,10 @@ const productSchema = new mongoose.Schema({
     subCategory:{type:String,required:true},
     sizes:{type:Array},
     bestseller:{type:Boolean},
+    top:{type:Boolean}, 
+    newly:{type:Boolean},
+    hot:{type:Boolean},
+    popular:{type:Boolean},
     reviews:[{ type: mongoose.Schema.Types.ObjectId, ref: "review" }],
     quantity:{type:Number,required:true},
     attributes: [

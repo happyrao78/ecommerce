@@ -7,4 +7,4 @@ adminRouter.post("/admin-login", adminLogin)
 adminRouter.get("/admin-phone", getAdminPhone)
 adminRouter.post("/admin-phone", updateAdminPhone)
 
-export default adminRouter;
+export default adminRouter; 

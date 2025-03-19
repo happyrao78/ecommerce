@@ -17,6 +17,10 @@ const EditProduct = ({ token }) => {
     originalPrice: 0,
     quantity: 0,
     bestseller: false,
+    top: false,
+    newly: false,
+    hot: false,
+    popular: false,
     image: []
   });
 
@@ -103,6 +107,10 @@ const EditProduct = ({ token }) => {
           sizes: Array.isArray(fetchedProduct.sizes) ? fetchedProduct.sizes : [],
           quantity: Number(fetchedProduct.quantity) || 0,
           bestseller: Boolean(fetchedProduct.bestseller),
+          top: Boolean(fetchedProduct.top),
+          newly: Boolean(fetchedProduct.newly),
+          hot: Boolean(fetchedProduct.hot),
+          popular: Boolean(fetchedProduct.popular),
           image: fetchedProduct.image || []
         });
 
@@ -324,6 +332,10 @@ const EditProduct = ({ token }) => {
       formData.append("quantity", String(product.quantity));
       
       formData.append("bestseller", product.bestseller ? "true" : "false");
+      formData.append("top", product.top ? "true" : "false");
+      formData.append("newly", product.newly ? "true" : "false");
+      formData.append("hot", product.hot ? "true" : "false");
+      formData.append("popular", product.popular ? "true" : "false");
       formData.append("productId", id);
   
       // Handle image uploads - both new and existing
@@ -482,6 +494,63 @@ const EditProduct = ({ token }) => {
                   />
                 </div>
                 <span className="ml-3 text-sm">{product.bestseller ? 'Yes' : 'No'}</span>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Top Section</label>
+              <div className="flex items-center mt-2">
+                <div 
+                  className={`relative inline-block w-12 h-6 transition-colors duration-200 ease-in-out rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${product.top ? 'bg-indigo-600' : 'bg-gray-200'}`}
+                  onClick={() => setProduct(prev => ({ ...prev, top: !prev.top }))}
+                >
+                  <span 
+                    className={`inline-block w-5 h-5 transition duration-200 ease-in-out transform bg-white rounded-full shadow-md ${product.top ? 'translate-x-6' : 'translate-x-1'}`}
+                  />
+                </div>
+                <span className="ml-3 text-sm">{product.top ? 'Yes' : 'No'}</span>
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Newly Launched</label>
+              <div className="flex items-center mt-2">
+                <div 
+                  className={`relative inline-block w-12 h-6 transition-colors duration-200 ease-in-out rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${product.newly ? 'bg-indigo-600' : 'bg-gray-200'}`}
+                  onClick={() => setProduct(prev => ({ ...prev, newly: !prev.newly }))}
+                >
+                  <span 
+                    className={`inline-block w-5 h-5 transition duration-200 ease-in-out transform bg-white rounded-full shadow-md ${product.newly ? 'translate-x-6' : 'translate-x-1'}`}
+                  />
+                </div>
+                <span className="ml-3 text-sm">{product.newly ? 'Yes' : 'No'}</span>
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Hot Section</label>
+              <div className="flex items-center mt-2">
+                <div 
+                  className={`relative inline-block w-12 h-6 transition-colors duration-200 ease-in-out rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${product.hot ? 'bg-indigo-600' : 'bg-gray-200'}`}
+                  onClick={() => setProduct(prev => ({ ...prev, hot: !prev.hot }))}
+                >
+                  <span 
+                    className={`inline-block w-5 h-5 transition duration-200 ease-in-out transform bg-white rounded-full shadow-md ${product.hot ? 'translate-x-6' : 'translate-x-1'}`}
+                  />
+                </div>
+                <span className="ml-3 text-sm">{product.hot ? 'Yes' : 'No'}</span>
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Popular Section</label>
+              <div className="flex items-center mt-2">
+                <div 
+                  className={`relative inline-block w-12 h-6 transition-colors duration-200 ease-in-out rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${product.popular ? 'bg-indigo-600' : 'bg-gray-200'}`}
+                  onClick={() => setProduct(prev => ({ ...prev, popular: !prev.popular }))}
+                >
+                  <span 
+                    className={`inline-block w-5 h-5 transition duration-200 ease-in-out transform bg-white rounded-full shadow-md ${product.popular ? 'translate-x-6' : 'translate-x-1'}`}
+                  />
+                </div>
+                <span className="ml-3 text-sm">{product.popular ? 'Yes' : 'No'}</span>
               </div>
             </div>
             

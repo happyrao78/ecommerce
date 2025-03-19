@@ -5,7 +5,7 @@ import userModel from "../models/userModel.js"
 // addproduct
 const addProduct = async (req, res) => {
     try {
-        const { name, description,detailedDescription, price,originalPrice, category, subCategory, sizes, bestseller, quantity,attributes } = req.body;
+        const { name, description,detailedDescription, price,originalPrice, category, subCategory, sizes, bestseller,top,newly,hot,popular, quantity,attributes } = req.body;
         const image1 = req.files.image1 && req.files.image1[0];
         const image2 = req.files.image2 && req.files.image2[0];
         const image3 = req.files.image3 && req.files.image3[0];
@@ -37,6 +37,10 @@ const addProduct = async (req, res) => {
             subCategory,
             sizes: JSON.parse(sizes),
             bestseller:bestseller ==="true"  ? true : false,
+            top:top ==="true"  ? true : false,
+            newly:newly ==="true"  ? true : false,
+            hot:hot ==="true"  ? true : false,
+            popular:popular ==="true"  ? true : false,
             quantity:Number(quantity),
            date: Date.now(),
         }
@@ -122,6 +126,10 @@ const updateProduct = async (req, res) => {
             subCategory, 
             sizes, 
             bestseller, 
+            top,
+            newly,
+            hot,
+            popular,
             quantity, 
             productId,
             existingImages, // This will be a JSON string containing URLs or nulls
@@ -198,6 +206,10 @@ const updateProduct = async (req, res) => {
             subCategory,
             sizes: JSON.parse(sizes),
             bestseller: bestseller === "true" ? true : false,
+            top: top === "true" ? true : false,
+            newly: newly === "true" ? true : false,
+            hot: hot === "true" ? true : false,
+            popular: popular === "true" ? true : false,
             quantity: Number(quantity),
         };
 

@@ -20,6 +20,10 @@ const Add = ({ token }) => {
     const [sizes, setSizes] = useState([]);
     const [quantity, setQuantity] = useState("")
     const [bestseller, setBestseller] = useState(false)
+    const [top, setTop] = useState(false)
+    const [newly, setNewly] = useState(false)
+    const [hot, setHot] = useState(false)
+    const [popular, setPopular] = useState(false)
     
     // Category states - Note: these are now strings, not arrays or objects
     const [categories, setCategories] = useState([]);
@@ -204,6 +208,10 @@ const Add = ({ token }) => {
             formData.append("category", selectedCategory);
             formData.append("subCategory", selectedSubcategory);
             formData.append("bestseller", bestseller);
+            formData.append("top", top);
+            formData.append("newly", newly);
+            formData.append("hot", hot);
+            formData.append("popular", popular);
             formData.append("sizes", JSON.stringify(sizes));
             formData.append("quantity", quantity);
             
@@ -241,6 +249,10 @@ const Add = ({ token }) => {
                 setSizes([]);
                 setQuantity("");
                 setBestseller(false);
+                setTop(false);
+                setNewly(false);
+                setHot(false);
+                setPopular(false);
                 setImage1(false);
                 setImage2(false);
                 setImage3(false);
@@ -452,6 +464,58 @@ const Add = ({ token }) => {
                     />
                     <label htmlFor="bestseller" className='cursor-pointer font-medium'>
                         Add To Bestseller Section
+                    </label>
+                </div>
+
+                <div className='flex items-center gap-2 mt-4'>
+                    <input 
+                        type="checkbox" 
+                        id="top" 
+                        onChange={() => setTop(prev => !prev)} 
+                        checked={top} 
+                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    />
+                    <label htmlFor="top" className='cursor-pointer font-medium'>
+                        Add To Top Section
+                    </label>
+                </div>
+
+                <div className='flex items-center gap-2 mt-4'>
+                    <input 
+                        type="checkbox" 
+                        id="newly" 
+                        onChange={() => setNewly(prev => !prev)} 
+                        checked={newly} 
+                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    />
+                    <label htmlFor="newly" className='cursor-pointer font-medium'>
+                        Add To New Section
+                    </label>
+                </div>
+
+                <div className='flex items-center gap-2 mt-4'>
+                    <input 
+                        type="checkbox" 
+                        id="hot" 
+                        onChange={() => setHot(prev => !prev)} 
+                        checked={hot} 
+                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    />
+                    <label htmlFor="hot" className='cursor-pointer font-medium'>
+                        Add To Hot Section
+                    </label>
+                </div>
+
+                <div className='flex items-center gap-2 mt-4'>
+                    <input 
+                        type="checkbox" 
+                        id="popular" 
+                        onChange={() => setPopular(prev => !prev)} 
+                        checked={popular} 
+                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    />
+                    <label htmlFor="popular" className='cursor-pointer font-medium'>
+                        Add To Popular Section
                     </label>
                 </div>
                 
