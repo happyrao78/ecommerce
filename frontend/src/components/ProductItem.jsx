@@ -159,7 +159,7 @@ const ProductItem = ({ id, image, name, price, originalPrice, colors = [], attri
 
           {/* Quick Add To Cart Button */}
           <button 
-            className={`absolute bottom-6 sm:bottom-6 lg:bottom-4 left-1/2 transform -translate-x-1/2 opacity-100 sm:opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-all duration-300 ease-in-out bg-white text-black px-4 py-2 rounded-full shadow-md font-medium translate-y-10 lg:group-hover:translate-y-0 hover:bg-black hover:text-white text-xs sm:text-xs lg:text-sm uppercase flex items-center gap-2 ${quantity <= 0 ? 'bg-gray-200 cursor-not-allowed' : ''}`}
+            className={`absolute bottom-6 sm:bottom-8 lg:bottom-4 left-1/2 transform -translate-x-1/2 opacity-100 sm:opacity-10  lg:opacity-0 lg:group-hover:opacity-100 transition-all duration-300 ease-in-out bg-black text-white px-4 py-2 rounded-full shadow-md font-medium translate-y-10 lg:group-hover:translate-y-0 hover:bg-black hover:text-white text-xs sm:text-xs lg:text-sm uppercase flex items-center gap-2 mb-5 ${quantity <= 0 ? 'bg-gray-200 cursor-not-allowed' : ''}`}
             onClick={() => {
               if (quantity > 0) {
                 addToCart(id, selectedAttributeValues);
@@ -168,8 +168,8 @@ const ProductItem = ({ id, image, name, price, originalPrice, colors = [], attri
             }}
             disabled={quantity <= 0}
           >
-            <ShoppingBag size={16} />
-            {quantity > 0 ? "Add to Cart" : "Out of Stock"}
+            <ShoppingBag size={18} />
+            {quantity > 0 ? "Add" : "Out of Stock"}
           </button>
         </div>
 

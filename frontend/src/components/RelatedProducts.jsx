@@ -28,7 +28,10 @@ const RelatedProducts = ({category,subCategory}) => {
                     <ProductItem key={index} id={item._id} name={item.name}
                     price={item.price}
                     originalPrice={item.originalPrice}
-                    image={item.image}/>
+                    image={item.image}
+                    quantity={item.quantity}
+                    />
+                    
                 ))
             }
         </div>

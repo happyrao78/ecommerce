@@ -110,7 +110,7 @@ const Footer = () => {
 
       {/* Footer Bottom */}
       <div className='flex flex-col sm:flex-row justify-between items-center border-t border-gray-200 mt-8 py-4 lg:px-12 px-4'>
-        <p className='text-sm'>©2025 Modave. All Rights Reserved.</p>
+        <p className='text-sm'>©2025 Bihar Innovation. All Rights Reserved.</p>
         
         {/* <div className='flex items-center gap-2 mt-4 sm:mt-0'>
           <div className='flex items-center gap-2'>

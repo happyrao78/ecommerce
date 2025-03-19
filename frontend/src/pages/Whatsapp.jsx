@@ -1,41 +1,68 @@
-import React from 'react';
-import { FaWhatsapp, FaRocketchat } from 'react-icons/fa'; // Using react-icons for WhatsApp icon
+"use client";
+
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { FaWhatsapp } from "react-icons/fa";
 
 const WhatsAppChat = () => {
-  // WhatsApp phone number (use your actual business phone number)
-  const phoneNumber = '8595864036'; // Example phone number, update with your own
-  
-  // The default message (URL encoded)
-  const message = 'Hello, I checked your website and can I get more information about your services?'; // Default message
+    const [phoneNumber, setPhoneNumber] = useState("");
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-  // WhatsApp URL with phone number and default message
-  const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+    useEffect(() => {
+        const fetchAdminPhone = async () => {
+            try {
+                setIsLoading(true);
+                const response = await fetch("https://ecommerce-production-a805.up.railway.app/api/admin/admin-phone");
+                
+                if (!response.ok) {
+                    throw new Error("Failed to fetch admin phone number");
+                }
+                
+                const data = await response.json();
+                setPhoneNumber(data.phoneNumber);
+            } catch (err) {
+                console.error("Error fetching admin phone:", err);
+                setError(err.message);
+            } finally {
+                setIsLoading(false);
+            }
+        };
 
-  return (
-    <div
-      className="fixed bottom-4 right-4 z-50" // Positioning it on the bottom right of the page
-      style={{
-        position: 'fixed',
-        bottom: '60px',
-        right: '40px',
-        zIndex: 50,
-      }}
-    >
-      <a
-        href={whatsappURL} // Link to open WhatsApp with the message
-        target="_blank" // Opens in a new tab
-        rel="noopener noreferrer"
-        className="relative p-4  rounded-full transition-all duration-10"
-      >
-        {/* Blinking effect circle */}
-        <div className="absolute inset-0  w-[60px] h-[60px] rounded-full animate-pulse">
-        <FaWhatsapp className=" text-orange-600 text-5xl mx-auto " />
-        </div>
+        fetchAdminPhone();
+    }, []);
+
+    const handleWhatsAppClick = () => {
+        if (!phoneNumber) {
+            console.error("Phone number not available");
+            return;
+        }
         
-        
-      </a>
-    </div>
-  );
+        const whatsappUrl = `https://wa.me/${phoneNumber}`;
+        window.open(whatsappUrl, "_blank");
+    };
+
+    // Don't render the button if we're still loading or there was an error
+    if (isLoading) {
+        return null; // Or you could return a loading spinner here
+    }
+
+    // You can handle the error state as needed
+    if (error) {
+        console.error("Error loading WhatsApp contact:", error);
+        return null; // Or return a fallback UI
+    }
+
+    return (
+        <motion.div
+            className="fixed bottom-5 right-5 p-2  rounded-full  cursor-pointer z-50"
+            onClick={handleWhatsAppClick}
+            whileTap={{ scale: 0.9 }}
+            whileHover={{ scale: 1.1 }}
+        >
+            <FaWhatsapp className="text-4xl mb-8 sm:text-3xl lg:text-4xl z-50" color="red" />
+        </motion.div>
+    );
 };
 
 export default WhatsAppChat;

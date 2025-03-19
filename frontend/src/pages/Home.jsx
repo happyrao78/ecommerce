@@ -30,10 +30,12 @@ const Home = () => {
         <New />
         <Hot />
         <Popular />
+        <WhatsAppChat />
         <OurPolicy/>
+        
         <HomeFeedback/>
         {/* <NewsLetterBox/> */}
-        <WhatsAppChat />
+        
     </div>
   )
 }

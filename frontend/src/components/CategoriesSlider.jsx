@@ -1,48 +1,68 @@
-import React, { useRef, useEffect, useContext } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import "swiper/css"; // Core Swiper styles
 import "swiper/css/navigation"; // Navigation module styles
 import Title from './Title';
-import { FaArrowLeft, FaArrowRight } from 'react-icons/fa6'; // Ensure proper import
+import { FaArrowLeft, FaArrowRight } from 'react-icons/fa6';
 import { motion } from 'framer-motion';
-import heroslider from "../assets/ecommerce-islam/hero-slider.jpg";
-import heroslider2 from "../assets/ecommerce-islam/hero-slider.jpg";
-import categoryslider1 from "../assets/ecommerce-islam/category-slider1.jpg";
-import { ShopContext } from '../context/ShopContext';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+// import { backendUrl } from '../App';
+import { toast } from 'react-toastify';
 
-
-const CategoriesSlider = () => {
-
-    const {subCategoryData} = useContext(ShopContext)
-
-    const categories = 
-        Object.keys(subCategoryData).length > 0
-            ? Object.entries(subCategoryData).flatMap(([category, subcategories]) => [
-                // First add the main category
-                { title: category.charAt(0).toUpperCase() + category.slice(1), image: category.image},
-                // Then add subcategories (indented or with a different style)
-                
-            ])
-            : [{ name: "No Categories", link: "/category", useHashLink: false }]
-       
-    
-
+const CategoriesSlider = ({ token }) => {
+    const [categories, setCategories] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [swiperInitialized, setSwiperInitialized] = useState(false);
 
     const prevRef = useRef(null);
     const nextRef = useRef(null);
+    const swiperRef = useRef(null);
+
+    const fetchCategories = async () => {
+        setLoading(true);
+        try {
+            const response = await axios.get(
+                `https://ecommerce-production-a805.up.railway.app/api/category/getSubCategory`,
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            
+            if (response.data.success) {
+                setCategories(response.data.categories);
+            } else {
+                toast.error('Failed to fetch categories');
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error('Error occurred while fetching categories');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const swiperInstance = document.querySelector('.swiper').swiper;
-        if (swiperInstance) {
-            swiperInstance.params.navigation.prevEl = prevRef.current;
-            swiperInstance.params.navigation.nextEl = nextRef.current;
-            swiperInstance.navigation.init();
-            swiperInstance.navigation.update();
+        fetchCategories();
+    }, [token]);
+
+    // Initialize Swiper navigation only after Swiper is mounted
+    useEffect(() => {
+        if (swiperInitialized && swiperRef.current) {
+            const swiperInstance = swiperRef.current;
+            if (prevRef.current && nextRef.current) {
+                swiperInstance.params.navigation.prevEl = prevRef.current;
+                swiperInstance.params.navigation.nextEl = nextRef.current;
+                swiperInstance.navigation.init();
+                swiperInstance.navigation.update();
+            }
         }
-        console.log(categories)
-    }, []);
+    }, [swiperInitialized]);
+
+    // Handle Swiper initialization
+    const handleSwiperInit = (swiper) => {
+        swiperRef.current = swiper;
+        setSwiperInitialized(true);
+    };
 
     return (
         <motion.div
@@ -56,7 +76,7 @@ const CategoriesSlider = () => {
                     <div className="mb-4 flex flex-col gap-2 w-full lg:w-1/2 ">
                         <Title className="text-2xl md:text-3xl font-bold text-gray-800" text1={"Explore"} text2={"Collections"} />
                         <p className="text-gray-600 w-full lg:w-3/4 text-sm md:text-base">
-                            Here are lots of interesting destinations to visit, but don’t be confused—they’re already grouped by category.
+                            Here are lots of interesting destinations to visit, but don't be confused—they're already grouped by category.
                         </p>
                     </div>
                     <div className="flex justify-start sm:justify-start lg:justify-end items-center gap-2 sm:gap-2 lg:gap-4 w-full lg:w-1/2">
@@ -77,41 +97,45 @@ const CategoriesSlider = () => {
                     </div>
                 </div>
 
-                <Swiper
-                    modules={[Navigation]}
-                    loop={true}
-                    navigation={{
-                        prevEl: prevRef.current,
-                        nextEl: nextRef.current,
-                    }}
-                    spaceBetween={10}
-                    breakpoints={{
-                        0: { slidesPerView: 2, spaceBetween: 10 },
-                        640: { slidesPerView: 2, spaceBetween: 10 },
-                        768: { slidesPerView: 2, spaceBetween: 20 },
-                        1024: { slidesPerView: 5, spaceBetween: 10 },
-                        1280: { slidesPerView: 5, spaceBetween: 20 },
-                    }}
-                    className="w-full "
-                >
-                    {categories.map((category, index) => (
-                        <SwiperSlide key={index} className="flex justify-center ">
-                            <div className="flex flex-col items-center ">
-                                <div className="w-100 h-150 bg-gray-200 rounded-xl overflow-hidden shadow-md relative flex flex-col justify-center items-center">
-                                    <img
-                                        src={category.image}
-                                        alt={category.title}
-                                        className="w-full h-full object-cover"
-                                    />
-                                    <Link to={category.title ? `/category/${category.title.toLowerCase()}` : '#'} className="group absolute bottom-5 text-md md:text-lg text-gray-700 px-8 py-2 bg-white rounded-full flex items-center hover:pr-10 gap-2 transition-all duration-300 ease-in-out hover:text-red-600 font-medium">
-                                        {category.title}
-                                        <FaArrowRight className=" hidden group-hover:block group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 opacity-0 translate-y-4 -rotate-45 group-hover:text-red-600 font-[500]" />
-                                    </Link>
-                                </div>
-                            </div>
-                        </SwiperSlide>
-                    ))}
-                </Swiper>
+                {loading ? (
+                    <div className="flex justify-center items-center h-40 w-full">
+                        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-black"></div>
+                    </div>
+                ) : (
+                    <Swiper
+                        modules={[Navigation]}
+                        loop={true}
+                        onInit={handleSwiperInit}
+                        navigation={false} // Initially disable navigation until we set it up in useEffect
+                        spaceBetween={10}
+                        breakpoints={{
+                            0: { slidesPerView: 2, spaceBetween: 10 },
+                            640: { slidesPerView: 2, spaceBetween: 10 },
+                            768: { slidesPerView: 2, spaceBetween: 20 },
+                            1024: { slidesPerView: 5, spaceBetween: 10 },
+                            1280: { slidesPerView: 5, spaceBetween: 20 },
+                        }}
+                        className="w-full"
+                    >
+                       {categories.map((category, index) => (
+    <SwiperSlide key={index} className="flex justify-center">
+        <div className="flex flex-col items-center">
+            <div className="w-24 h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 rounded-full overflow-hidden shadow-md relative flex justify-center items-center border-4 border-white">
+                <img
+                    src={category.image}
+                    alt={category.category}
+                    className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 hover:bg-black hover:bg-opacity-10 transition-all duration-300"></div>
+            </div>
+            <Link to={`/category/${category.category.toLowerCase()}`} className="mt-3 text-sm md:text-base text-center font-medium text-gray-800 hover:text-red-600 transition-all duration-300">
+                {category.category}
+            </Link>
+        </div>
+    </SwiperSlide>
+))}
+                    </Swiper>
+                )}
             </div>
         </motion.div>
     );

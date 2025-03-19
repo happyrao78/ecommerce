@@ -83,18 +83,18 @@ const Hero = () => {
     <div className="w-full overflow-hidden relative">
       <Slider {...settings}>
         {slidesData.map((slide, index) => (
-          <div key={index} className="w-full h-full sm:h-full relative px-0">
+          <div key={index} className="w-full relative px-0">
             <img 
               src={slide.image} 
               alt={`Slide ${index + 1}`} 
-              className="w-full object-cover min-h-[300px] sm:min-h-[400px] md:min-h-[500px] lg:min-h-[600px]" 
+              className="w-full object-cover h-64 sm:h-80 md:h-96 lg:h-100" 
             />
             
             <div className="absolute inset-0 flex flex-col items-start justify-center p-4 sm:p-6 md:p-8 lg:p-10 pl-4 sm:pl-8 md:pl-12 lg:pl-16 w-full sm:w-4/5 md:w-3/4 gap-2 sm:gap-4 md:gap-6">
-              <h1 className="text-black text-3xl sm:text-5xl md:text-6xl lg:text-8xl font-[500] leading-tight">
+              <h1 className="text-black text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-[500] leading-tight">
                 {slide.heading}
               </h1>
-              <h5 className="text-black text-sm sm:text-base md:text-lg mb-2 sm:mb-4">
+              <h5 className="text-black text-xs sm:text-sm md:text-base mb-2 sm:mb-4">
                 {slide.subheading}
               </h5>
               <Link className="mt-2" to="/collection">

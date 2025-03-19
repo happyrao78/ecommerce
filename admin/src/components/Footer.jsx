@@ -56,7 +56,7 @@ const Footer = () => {
               className="text-pink-500 mx-1 fill-current" 
               fill="currentColor"
             /> by 
-            <span className="text-transparent bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text font-medium ml-1">DevxDuo</span>
+            <span className="text-transparent bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text font-medium ml-1">Bihar Innovation</span>
           </div>
           
           <div className="flex items-center space-x-3">
