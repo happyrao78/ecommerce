@@ -54,6 +54,7 @@ const LatestCollection = () => {
             originalPrice={item.originalPrice}
             reviews={item.reviews}
             attributes={item.attributes}
+            quantity={item.quantity}
           />
         ))}
       </div>
@@ -70,6 +71,8 @@ const LatestCollection = () => {
                 price={item.price}
                 originalPrice={item.originalPrice}
                 reviews={item.reviews}
+                attributes={item.attributes}
+                quantity={item.quantity}
               />
             </div>
           ))}

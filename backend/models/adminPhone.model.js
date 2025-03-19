@@ -11,7 +11,7 @@ const adminPhoneSchema = new mongoose.Schema({
             },
             message: props => `${props.value} is not a valid phone number!`
         }
-    }
+    } 
 });
 
 // Pre-save hook to ensure only one phone number exists

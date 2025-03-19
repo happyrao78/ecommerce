@@ -55,6 +55,7 @@ const Popular = () => {
             originalPrice={item.originalPrice}
             reviews={item.reviews}
             attributes={item.attributes}
+            quantity={item.quantity}
           />
         ))}
       </div>

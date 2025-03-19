@@ -1,68 +1,3 @@
-// import React from 'react'
-// import { assets } from '../assets/frontend_assets/assets'
-// import { NavLink } from 'react-router-dom'
-
-// const Footer = () => {
-//   return (
-//     <div className=''>
-//         <div className='flex flex-col sm:grid grid-cols-[3fr_1fr_1fr] gap-14  mt-16 text-sm bg-orange-600 lg:px-12 py-6 px-4 sm:px-4'>
-//             <div>
-//                 <img src={assets.logo} alt="logo"
-//                 className='w-40' />
-//                 <p className='text-md w-full md:w-2/3 text-gray-300 mt-0'>
-//                lorem Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-//                 </p>
-//             </div>
-
-//             <div>
-//                 <p className='text-2xl font-medium mb-5 text-gray-100 teko'>COMPANY</p>
-//                 <ul className='flex flex-col  text-gray-300 '>
-//                 <ul className='hidden sm:flex lg:grid gap-5 text-sm text-gray-100'>
-//                 <NavLink to='/' className='flex flex-col gap-1'>
-//                     <p className='font-medium'>HOME</p>
-//                     <hr className='w-1/6 border-none h-[1.5px] bg-gray-100 hidden' />
-//                 </NavLink>
-
-//                 {/* <NavLink to='/collection' className='flex flex-col  gap-1'>
-//                     <p>COLLECTION</p>
-//                     <hr className='w-1/6 border-none h-[1.5px] bg-gray-100 hidden' />
-//                 </NavLink> */}
-
-//                 <NavLink to='/about' className='flex flex-col  gap-1'>
-//                     <p className='font-medium'>ABOUT</p>
-//                     <hr className='w-1/6 border-none h-[1.5px] bg-gray-100 hidden' />
-//                 </NavLink>
-
-//                 <NavLink to='/contact' className='flex flex-col  gap-1'>
-//                     <p className='font-medium'>CONTACT</p>
-//                     <hr className='w-1/6 border-none h-[1.5px] bg-gray-100 hidden' />
-//                 </NavLink>
-//             </ul>
-//                 </ul>
-//             </div>
-
-//             <div>
-//                 <p className='text-2xl font-medium mb-5 text-gray-100 teko'>GET IN TOUCH</p>
-//                 <ul className='flex flex-col gap-1 text-gray-300'>
-//                 <li className='text-md font-medium'>+91 98145xxxx</li>
-//                 <li className='text-md font-medium'>hello@gmail.com</li>
-//                 </ul>
-//             </div>
-//         </div>
-
-//         <div className='bg-orange-600'>
-//             <hr />
-//             <p className='py-5 text-md text-center text-gray-300 teko'>
-//                 Powered by DevXDuo - All Rights Reserved.
-//             </p>
-//         </div>
-//     </div>
-//   )
-// }
-
-// export default Footer
-
-
 import React from 'react'
 import { assets } from '../assets/frontend_assets/assets'
 import { Link, NavLink } from 'react-router-dom'
@@ -177,7 +112,7 @@ const Footer = () => {
       <div className='flex flex-col sm:flex-row justify-between items-center border-t border-gray-200 mt-8 py-4 lg:px-12 px-4'>
         <p className='text-sm'>©2025 Modave. All Rights Reserved.</p>
         
-        <div className='flex items-center gap-2 mt-4 sm:mt-0'>
+        {/* <div className='flex items-center gap-2 mt-4 sm:mt-0'>
           <div className='flex items-center gap-2'>
             <span>🇺🇸</span>
             <select className='bg-transparent border-none'>
@@ -190,7 +125,7 @@ const Footer = () => {
               <option>English</option>
             </select>
           </div>
-        </div>
+        </div> */}
 
         <div className='flex items-center gap-2 mt-4 sm:mt-0'>
           <p className='mr-2'>Payment:</p>
