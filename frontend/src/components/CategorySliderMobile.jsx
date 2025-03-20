@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { UiContext } from "../context/UiContext";
-import { ShopContext } from "../context/shopContext";
+import { ShopContext } from "../context/ShopContext";
 import { Link } from "react-router-dom";
 
 
