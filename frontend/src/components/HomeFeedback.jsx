@@ -206,17 +206,17 @@ const HomeFeedback = () => {
               onClick={() => openModal(review)}
             > */}
             <div
-              className="flex items-center justify-center  rounded-lg  cursor-pointer bg-white border"
+              className="flex items-center justify-center  rounded-lg  cursor-pointer bg-white border "
               
             >
-              <div className="hidden lg:block lg:w-full lg:h-[350px] overflow-hidden object-cover">
+              <div className="hidden lg:block lg:w-full lg:h-[350px] overflow-hidden object-cover ">
                 <img
                   src={review.image}
                   alt={review.name}
                   className="w-full h-full object-cover"
                 />
               </div>
-              <div className="flex flex-col justify-start items-start px-0 sm:px-0 lg:px-4 max-w-[350px]">
+              <div className="flex flex-col justify-start items-start px-0 sm:px-0 lg:px-4 max-w-[350px] xs:ml-4 lg:ml-0 sm:ml-4 ml-4">
                 <div className="flex flex-col justify-start items-start gap-2 py-4">
                 <div className="flex ">
                   {[1, 2, 3, 4, 5].map((rate, index) => (
