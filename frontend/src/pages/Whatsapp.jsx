@@ -3,7 +3,7 @@
 import React, { useState, useEffect,useContext } from "react";
 import { motion } from "framer-motion";
 import { FaWhatsapp } from "react-icons/fa";
-import {ShopContext} from "../context/shopContext";
+import {ShopContext} from "../context/ShopContext";
 
 const WhatsAppChat = () => {
     const [phoneNumber, setPhoneNumber] = useState("");
