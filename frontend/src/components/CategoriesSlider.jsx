@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useContext } from 'react';
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import "swiper/css"; // Core Swiper styles
@@ -10,9 +10,11 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 // import { backendUrl } from '../App';
 import { toast } from 'react-toastify';
+import { ShopContext } from '../context/shopContext';
 
 const CategoriesSlider = ({ token }) => {
     const [categories, setCategories] = useState([]);
+    const {backendUrl} = useContext(ShopContext)
     const [loading, setLoading] = useState(true);
     const [swiperInitialized, setSwiperInitialized] = useState(false);
 
@@ -23,8 +25,7 @@ const CategoriesSlider = ({ token }) => {
     const fetchCategories = async () => {
         setLoading(true);
         try {
-            const response = await axios.get(
-                `https://ecommerce-production-a805.up.railway.app/api/category/getSubCategory`,
+            const response = await axios.get( backendUrl + "/api/category/getSubCategory",
                 { headers: { Authorization: `Bearer ${token}` } }
             );
             

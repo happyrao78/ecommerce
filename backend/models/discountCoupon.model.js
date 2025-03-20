@@ -86,4 +86,4 @@ discountCouponSchema.index({ startDate: 1, endDate: 1 });
 
 const DiscountCoupon = mongoose.models.discountcoupon || mongoose.model("discountcoupon", discountCouponSchema);
 
-export default DiscountCoupon;
+export default DiscountCoupon; 

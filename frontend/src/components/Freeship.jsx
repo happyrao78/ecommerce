@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
 import { BsLightningCharge, BsTicket } from "react-icons/bs";
+import { ShopContext } from '../context/shopContext';
 
 const Freeship = () => {
   const location = useLocation();
+  const {backendUrl} = useContext(ShopContext)
   const [coupons, setCoupons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -17,7 +19,7 @@ const Freeship = () => {
     const fetchCoupons = async () => {
       try {
         setLoading(true);
-        const response = await fetch('https://ecommerce-production-a805.up.railway.app/api/discount');
+        const response = await fetch(backendUrl + "/api/discount");
         
         if (!response.ok) {
           throw new Error('Failed to fetch coupons');
