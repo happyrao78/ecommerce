@@ -80,7 +80,7 @@ const discountCouponSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 // Index for faster lookup
-discountCouponSchema.index({ code: 1 });
+// discountCouponSchema.index({ code: 1 });
 discountCouponSchema.index({ isActive: 1 });
 discountCouponSchema.index({ startDate: 1, endDate: 1 });
 
