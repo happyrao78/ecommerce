@@ -47,6 +47,8 @@ const loadOrderData = async () => {
           item["paymentMethod"] = order.paymentMethod;
           item["date"] = order.date;
           item["orderAmount"] = order.amount;
+          // In your loadOrderData function, add this line:
+          item["trackingLink"] = order.trackingLink;
           // item["originalPrice"] = order.originalAmount;
           // item["discountedPrice"] = order.amount;
           item["couponCode"] = orderCouponCode;
@@ -97,6 +99,7 @@ const loadOrderData = async () => {
   useEffect(() => {
     loadOrderData();
     console.log(orderData)
+    // console.log(orderData.trackingLink)
   }, [token])
 
   return (
@@ -215,14 +218,18 @@ const loadOrderData = async () => {
 </div>
 
                 {/* Action Buttons - Right Side */}
-                <div className="flex flex-row sm:flex-col justify-center items-center gap-3 mt-4 sm:mt-0">
-                  <Button
-                    className="w-full sm:w-auto whitespace-nowrap text-sm px-4 py-2"
-                    onClick={loadOrderData}
-                  >
-                    Track Order
-                  </Button>
-                </div>
+               {/* Action Buttons - Right Side */}
+<div className="flex flex-row sm:flex-col justify-center items-center gap-3 mt-4 sm:mt-0">
+  {/* Track Order Button */}
+  {item.status.toLowerCase() === "accepted" && item.trackingLink && (
+    <Button
+      className="w-full sm:w-auto whitespace-nowrap text-sm px-4 py-2  text-white rounded-md "
+      onClick={() => window.open(item.trackingLink, "_blank")}
+    >
+      Track Order
+    </Button>
+  )}
+</div>
               </div>
             </div>
           ))
