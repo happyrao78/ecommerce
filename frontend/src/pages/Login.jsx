@@ -1,162 +1,3 @@
-// import React, { useContext, useEffect, useState } from 'react';
-// import { ShopContext } from '../context/ShopContext';
-// import axios from 'axios';
-// import { toast } from 'react-toastify';
-// import Button from '../components/Button';
-// import { LockIcon, MailIcon, UserIcon } from 'lucide-react';
-
-// const Login = () => {
-//     const [currentState, setCurrentState] = useState("Login");
-//     const { token, setToken, navigate, backendUrl } = useContext(ShopContext);
-//     const [name, setName] = useState("");
-//     const [email, setEmail] = useState("");
-//     const [password, setPassword] = useState("");
-//     const [isLoading, setIsLoading] = useState(false);
-
-//     const onSubmitHandler = async (e) => {
-//         e.preventDefault();
-//         setIsLoading(true);
-//         try {
-//             const endpoint = currentState === "Sign Up" ? "/api/user/register" : "/api/user/login";
-//             const payload = currentState === "Sign Up" ? { name, email, password } : { email, password };
-//             const response = await axios.post(backendUrl + endpoint, payload);
-            
-//             if (response.data.success) {
-//                 toast.success(`${currentState} successful!`);
-//                 setToken(response.data.token);
-//                 localStorage.setItem("token", response.data.token);
-//                 navigate("/");
-//             } else {
-//                 toast.error(response.data.message);
-//             }
-//         } catch (error) {
-//             console.log(error);
-//             toast.error(error.response?.data?.message || error.message);
-//         } finally {
-//             setIsLoading(false);
-//         }
-//     };
-
-//     useEffect(() => {
-//         if (token) navigate("/");
-//     }, [token, navigate]);
-
-//     return (
-//         <div className="flex items-center justify-center min-h-[calc(100vh-5rem)] bg-gray-50 px-4 py-8 sm:py-12 w-full">
-//             <div className="w-full max-w-md mx-auto">
-//                 <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl overflow-hidden">
-//                     {/* Header */}
-//                     <div className="bg-black px-4 sm:px-6 py-6 sm:py-8 text-white">
-//                         <h2 className="text-2xl sm:text-3xl font-bold text-center">
-//                             {currentState === "Login" ? "Welcome Back" : "Create Account"}
-//                         </h2>
-//                         <p className="text-gray-300 text-sm sm:text-base text-center mt-2">
-//                             {currentState === "Login" 
-//                                 ? "Sign in to access your account" 
-//                                 : "Join us and start shopping today"}
-//                         </p>
-//                     </div>
-
-//                     {/* Form */}
-//                     <div className="p-4 sm:p-6 md:p-8">
-//                         <form onSubmit={onSubmitHandler} className="space-y-4 sm:space-y-6">
-//                             {currentState === "Sign Up" && (
-//                                 <div className="relative">
-//                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-//                                         <UserIcon className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
-//                                     </div>
-//                                     <input
-//                                         type="text"
-//                                         className="w-full pl-9 sm:pl-10 pr-4 py-2 sm:py-3 border border-gray-300 rounded-md sm:rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-sm sm:text-base"
-//                                         placeholder="Full Name"
-//                                         required
-//                                         onChange={(e) => setName(e.target.value)}
-//                                         value={name}
-//                                     />
-//                                 </div>
-//                             )}
-                            
-//                             <div className="relative">
-//                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-//                                     <MailIcon className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
-//                                 </div>
-//                                 <input
-//                                     type="email"
-//                                     className="w-full pl-9 sm:pl-10 pr-4 py-2 sm:py-3 border border-gray-300 rounded-md sm:rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-sm sm:text-base"
-//                                     placeholder="Email Address"
-//                                     required
-//                                     onChange={(e) => setEmail(e.target.value)}
-//                                     value={email}
-//                                 />
-//                             </div>
-                            
-//                             <div className="relative">
-//                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-//                                     <LockIcon className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
-//                                 </div>
-//                                 <input
-//                                     type="password"
-//                                     className="w-full pl-9 sm:pl-10 pr-4 py-2 sm:py-3 border border-gray-300 rounded-md sm:rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-sm sm:text-base"
-//                                     placeholder="Password"
-//                                     required
-//                                     onChange={(e) => setPassword(e.target.value)}
-//                                     value={password}
-//                                 />
-//                             </div>
-                            
-//                             {currentState === "Login" && (
-//                                 <div className="flex justify-end">
-//                                     <a href="#" className="text-xs sm:text-sm text-blue-600 hover:text-blue-800">
-//                                         Forgot Password?
-//                                     </a>
-//                                 </div>
-//                             )}
-                            
-//                             <Button 
-//                                 className="w-full "
-//                                 disabled={isLoading}
-//                             >
-//                                 {isLoading ? (
-//                                     <span className="inline-block h-4 w-4 sm:h-5 sm:w-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
-//                                 ) : null}
-//                                 {currentState === "Login" ? "Sign In" : "Create Account"}
-//                             </Button>
-//                         </form>
-                        
-//                         <div className="text-center mt-4 sm:mt-6">
-//                             {currentState === "Login" ? (
-//                                 <p className="text-gray-600 text-xs sm:text-sm">
-//                                     Don't have an account?{" "}
-//                                     <button 
-//                                         type="button"
-//                                         className="font-medium text-blue-600 hover:text-blue-800" 
-//                                         onClick={() => setCurrentState("Sign Up")}
-//                                     >
-//                                         Sign Up
-//                                     </button>
-//                                 </p>
-//                             ) : (
-//                                 <p className="text-gray-600 text-xs sm:text-sm">
-//                                     Already have an account?{" "}
-//                                     <button 
-//                                         type="button"
-//                                         className="font-medium text-blue-600 hover:text-blue-800" 
-//                                         onClick={() => setCurrentState("Login")}
-//                                     >
-//                                         Sign In
-//                                     </button>
-//                                 </p>
-//                             )}
-//                         </div>
-//                     </div>
-//                 </div>
-//             </div>
-//         </div>
-//     );
-// };
-
-// export default Login;
-
 
 
 import React, { useContext, useEffect, useState } from 'react';
@@ -299,7 +140,7 @@ const Login = () => {
     }, [token, navigate]);
 
     return (
-        <div className="flex items-center justify-center min-h-[calc(100vh-5rem)] bg-gray-50 px-4 py-8 sm:py-12 w-full">
+        <div className="flex items-center justify-center min-h-[calc(100vh-5rem)] bg-white px-4 py-8 sm:py-12 w-full">
             <div className="w-full max-w-md mx-auto">
                 <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl overflow-hidden">
                     {/* Header */}
@@ -361,13 +202,13 @@ const Login = () => {
                                 />
                             </div>
                             
-                            {currentState === "Login" && (
+                            {/* {currentState === "Login" && (
                                 <div className="flex justify-end">
                                     <a href="#" className="text-xs sm:text-sm text-blue-600 hover:text-blue-800">
                                         Forgot Password?
                                     </a>
                                 </div>
-                            )}
+                            )} */}
                             
                             <Button 
                                 className="w-full"

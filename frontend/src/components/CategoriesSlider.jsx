@@ -72,7 +72,7 @@ const CategoriesSlider = ({ token }) => {
             transition={{ duration: 1 }}
             viewport={{ once: true }}
         >
-            <div className="w-full min-h-[50vh] py-12 sm:py-12 lg:py-16 flex flex-col items-center justify-center gap-8 lg:gap-4 relative lg:mt-4 overflow-hidden">
+            <div className="w-full min-h-[50vh]  py-12 sm:py-12 lg:py-16 flex flex-col items-center justify-center gap-8 lg:gap-4 relative lg:mt-4 overflow-hidden">
                 <div className="w-full flex flex-wrap items-center justify-between ">
                     <div className="mb-4 flex flex-col gap-2 w-full lg:w-1/2 ">
                         <Title className="text-2xl md:text-3xl font-bold text-gray-800" text1={"Explore"} text2={"Collections"} />
@@ -110,11 +110,11 @@ const CategoriesSlider = ({ token }) => {
                         navigation={false} // Initially disable navigation until we set it up in useEffect
                         spaceBetween={10}
                         breakpoints={{
-                            0: { slidesPerView: 2, spaceBetween: 10 },
-                            640: { slidesPerView: 2, spaceBetween: 10 },
-                            768: { slidesPerView: 2, spaceBetween: 20 },
-                            1024: { slidesPerView: 5, spaceBetween: 10 },
-                            1280: { slidesPerView: 5, spaceBetween: 20 },
+                            0: { slidesPerView: 4, spaceBetween: 10 },
+                            640: { slidesPerView: 4, spaceBetween: 10 },
+                            768: { slidesPerView: 4, spaceBetween: 20 },
+                            1024: { slidesPerView: 6, spaceBetween: 10 },
+                            1280: { slidesPerView: 6, spaceBetween: 20 },
                         }}
                         className="w-full"
                     >

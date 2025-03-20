@@ -1,22 +1,18 @@
 import React, { useContext, useState, useEffect } from "react";
 import { ShopContext } from "../context/ShopContext";
 import { Link } from "react-router-dom";
-import Button from "./Button";
 import { UiContext } from "../context/UiContext";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { ShoppingBag, Heart, Maximize2, Plus, Eye, Award, Package } from "lucide-react";
+import { ShoppingBag, Heart, Maximize2, Eye, Award, Package } from "lucide-react";
 
 const ProductItem = ({ id, image, name, price, originalPrice, colors = [], attributes = [], quantity }) => {
-  const { currency, addToCart, addToWishlist, removeFromWishlist, navigate, isInWishlist, token, backendUrl,conversionRate } = useContext(ShopContext);
-  const [isLoading, setIsLoading] = useState(true);
+  const { currency, addToCart, addToWishlist, removeFromWishlist, navigate, isInWishlist, token, backendUrl, conversionRate } = useContext(ShopContext);
   const { openSlideCart } = useContext(UiContext);
   const [attributesList, setAttributesList] = useState([]);
   const [processedAttributes, setProcessedAttributes] = useState([]);
   const [selectedAttributeValues, setSelectedAttributeValues] = useState({});
   const [salesCount, setSalesCount] = useState(0);
-
-  console.log(`Product ${name} quantity:`, quantity);
 
   // Generate random sales number between 1.5k and 9.5k
   useEffect(() => {
@@ -50,8 +46,8 @@ const ProductItem = ({ id, image, name, price, originalPrice, colors = [], attri
     fetchAttributes();
   }, [token]);
 
-  const convertedPrice = conversionRate * price
-  const convertedOriginalPrice = conversionRate * originalPrice
+  const convertedPrice = conversionRate * price;
+  const convertedOriginalPrice = conversionRate * originalPrice;
 
   // Process attributes when attribute list is available
   useEffect(() => {
@@ -136,11 +132,10 @@ const ProductItem = ({ id, image, name, price, originalPrice, colors = [], attri
   const stockStatus = getStockStatus();
 
   return (
-    <div className="mb-6 group">
-      <div className="relative overflow-hidden rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
-        {/* Image Section */}
-        <div className="overflow-hidden h-[250px] sm:h-[180px] lg:h-[400px] relative rounded-t-xl bg-gray-50 flex flex-col justify-center items-center">
-          {/* First Image (default) */}
+    <div className="mb-4 group">
+      <div className="relative overflow-hidden rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
+        {/* Image Section - Reduced height on mobile */}
+        <div className="overflow-hidden h-40 sm:h-48 lg:h-64 relative rounded-t-lg bg-gray-50 flex flex-col justify-center items-center">
           <Link to={`/product/${id}`} className="text-gray-800 cursor-pointer block">
             <img
               className="absolute inset-0 h-full w-full object-cover transition-transform ease-in-out lg:group-hover:scale-105 lg:group-hover:opacity-0"
@@ -160,9 +155,26 @@ const ProductItem = ({ id, image, name, price, originalPrice, colors = [], attri
             )}
           </Link>
 
-          {/* Quick Add To Cart Button */}
+          {/* Badges Section - Simplified and positioned better for mobile */}
+          <div className="absolute top-2 left-2 flex flex-col gap-1">
+            {/* Discount Badge */}
+            {discountPercentage > 0 && (
+              <div className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                -{discountPercentage}%
+              </div>
+            )}
+          </div>
+          
+          {/* Mobile-Friendly Stock Badge - Top right */}
+          <div className="absolute top-2 right-2">
+            <div className={`text-xs font-medium px-2 py-1 rounded-full ${stockStatus.color}`}>
+              {stockStatus.text}
+            </div>
+          </div>
+
+          {/* Quick Add Button - Always visible on mobile */}
           <button 
-            className={`absolute bottom-6 sm:bottom-8 lg:bottom-4 left-1/2 transform -translate-x-1/2 opacity-100 sm:opacity-10  lg:opacity-0 lg:group-hover:opacity-100 transition-all duration-300 ease-in-out bg-black text-white px-4 py-2 rounded-full shadow-md font-medium translate-y-10 lg:group-hover:translate-y-0 hover:bg-black hover:text-white text-xs sm:text-xs lg:text-sm uppercase flex items-center gap-2 mb-5 ${quantity <= 0 ? 'bg-gray-200 cursor-not-allowed' : ''}`}
+            className={`absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-black text-white px-3 py-1.5 rounded-full shadow-md font-medium text-xs flex items-center gap-1 ${quantity <= 0 ? 'bg-gray-400 cursor-not-allowed' : ''}`}
             onClick={() => {
               if (quantity > 0) {
                 addToCart(id, selectedAttributeValues);
@@ -171,156 +183,86 @@ const ProductItem = ({ id, image, name, price, originalPrice, colors = [], attri
             }}
             disabled={quantity <= 0}
           >
-            <ShoppingBag size={18} />
-            {quantity > 0 ? "Add" : "Out of Stock"}
+            <ShoppingBag size={14} />
+            {quantity > 0 ? "ADD" : "OUT OF STOCK"}
           </button>
         </div>
 
-        {/* Badges Section */}
-        <div className="absolute top-3 left-3 flex flex-col gap-2">
-          {/* Discount Badge */}
-          {discountPercentage > 0 && (
-            <div className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
-              <Award size={12} />
-              -{discountPercentage}%
-            </div>
-          )}
-          
-          {/* Stock Status Badge */}
-          <div className={`text-xs font-medium px-2 py-1 rounded-full flex items-center gap-1 ${stockStatus.color}`}>
-            <Package size={12} />
-            {stockStatus.text}
-          </div>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="absolute top-3 right-3 flex flex-col space-y-3 opacity-0 lg:group-hover:opacity-100 translate-y-10 lg:group-hover:translate-y-0 transition-all duration-300 ease-in-out">
-          <button className="bg-white p-2 rounded-full shadow-md hover:bg-black hover:text-white flex items-center justify-center" 
-            onClick={() => {
-              if (isInWishlist(id)) {
-                removeFromWishlist(id, selectedAttributeValues);
-              } else {
-                addToWishlist(id, selectedAttributeValues);
-                navigate("/wishlist");
-              }
-            }}
-          >
-            <Heart size={18} fill={isInWishlist(id) ? "currentColor" : "none"} />
-          </button>
-          <Link className="bg-white p-2 rounded-full shadow-md hover:bg-black hover:text-white flex items-center justify-center" to={`/product/${id}`}>
-            <Maximize2 size={18} />
-          </Link>
-          <button className="bg-white p-2 rounded-full shadow-md hover:bg-black hover:text-white flex items-center justify-center" 
-            onClick={() => {
-              navigate(`/product/${id}`);
-            }}
-          >
-            <Eye size={18} />
-          </button>
-        </div>
-      </div>
-
-      {/* Product Details Section */}
-      <div className="mt-4 px-2">
-        <div className="flex justify-between items-start">
-          <h3 className="text-base font-medium text-gray-800 hover:text-black transition-colors duration-200 truncate max-w-[80%]">
+        {/* Product Details Section - Simplified for mobile */}
+        <div className="p-2">
+          {/* Product Title - Larger text and improved truncation */}
+          <h3 className="font-medium text-gray-800 truncate mb-1">
             <Link to={`/product/${id}`}>{name}</Link>
           </h3>
           
-          {/* Sales Count */}
-          <div className="text-xs bg-gray-100 px-2 py-1 rounded-full text-gray-600 flex items-center">
-            <ShoppingBag size={12} className="mr-1" /> {formatSales(salesCount)}
-          </div>
-        </div>
-
-        <div className="flex items-center mt-1 justify-between">
-          <div className="flex items-center">
-            <p className="text-sm font-semibold text-gray-800">
-              {/* {currency}{price.toFixed(2)} */}
-              {currency} {convertedPrice.toFixed(2)}
-            </p>
-            {originalPrice > 0 && price < originalPrice && (
-              <p className="text-xs text-gray-500 line-through ml-2">
-                {currency} {convertedOriginalPrice.toFixed(2)}
+          {/* Price Section - Better alignment */}
+          <div className="sm:grid lg:flex sm:gap-3 items-center justify-between mb-1">
+            <div className="flex items-center">
+              <p className="font-semibold text-gray-800">
+                {currency} {convertedPrice.toFixed(2)}
               </p>
-            )}
+              {originalPrice > 0 && price < originalPrice && (
+                <p className="text-xs text-gray-500 line-through ml-2">
+                  {currency} {convertedOriginalPrice.toFixed(2)}
+                </p>
+              )}
+            </div>
+            
+            {/* Sales Count */}
+            <div className="text-sm text-gray-600">
+              <ShoppingBag size={14} className="inline mr-1" /> {formatSales(salesCount)} sold
+            </div>
           </div>
           
-          {/* Quantity Indicator */}
-          <div className="text-xs text-gray-500">
-            {quantity > 0 ? `${quantity} in stock` : ""}
-          </div>
+          {/* Stock Quantity - Clear display */}
+          {quantity > 0 && (
+            <div className="text-xs text-gray-500 mb-1">
+              {quantity} in stock
+            </div>
+          )}
+
+          {/* Color/Size Selection - Simplified and more touch-friendly */}
+          {processedAttributes.length > 0 && (
+            <div className="flex flex-wrap gap-2 mt-1">
+              {processedAttributes
+                .filter(attr => attr.displayType === 'color' || attr.displayType === 'size')
+                .map((attribute, index) => (
+                  <div key={index} className="flex flex-col">
+                    {attribute.displayType === 'color' ? (
+                      <div className="flex gap-1">
+                        {attribute.values.slice(0, 4).map((value, valueIndex) => (
+                          <div
+                            key={valueIndex}
+                            className={`w-6 h-6 rounded-full cursor-pointer ${
+                              selectedAttributeValues[attribute.name] === value ? 'ring-2 ring-black' : 'ring-1 ring-gray-300'
+                            } ${getColorClass(value)}`}
+                            onClick={() => handleAttributeSelection(attribute._id, value, attribute.name)}
+                            title={value}
+                          />
+                        ))}
+                      </div>
+                    ) : attribute.displayType === 'size' && (
+                      <div className="flex flex-wrap gap-1">
+                        {attribute.values.slice(0, 3).map((value, valueIndex) => (
+                          <div
+                            key={valueIndex}
+                            className={`text-xs px-2 py-1 cursor-pointer ${
+                              selectedAttributeValues[attribute.name] === value 
+                                ? 'bg-black text-white' 
+                                : 'bg-gray-100'
+                            }`}
+                            onClick={() => handleAttributeSelection(attribute._id, value, attribute.name)}
+                          >
+                            {value}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+            </div>
+          )}
         </div>
-
-        {/* Display Attributes (in compact form) */}
-        {processedAttributes.length > 0 && (
-          <div className="mt-2 flex flex-wrap gap-3">
-            {processedAttributes.map((attribute, index) => (
-              <div key={index} className="mb-1">
-                <p className="text-xs font-medium text-gray-500 capitalize mb-1">{attribute.name}:</p>
-                {attribute.displayType === 'color' ? (
-                  <div className="flex gap-1">
-                    {attribute.values.map((value, valueIndex) => (
-                      <div
-                        key={valueIndex}
-                        className={`w-5 h-5 rounded-full cursor-pointer ${
-                          selectedAttributeValues[attribute.name] === value ? 'ring-2 ring-black ring-offset-1' : 'ring-1 ring-gray-300'
-                        } ${getColorClass(value)}`}
-                        onClick={() => handleAttributeSelection(attribute._id, value, attribute.name)}
-                        title={value}
-                      />
-                    ))}
-                  </div>
-                ) : attribute.displayType === 'size' ? (
-                  <div className="flex flex-wrap gap-1">
-                    {attribute.values.map((value, valueIndex) => (
-                      <div
-                        key={valueIndex}
-                        className={`text-xs px-2 py-1 border cursor-pointer transition-colors ${
-                          selectedAttributeValues[attribute.name] === value 
-                            ? 'bg-black text-white border-black' 
-                            : 'bg-white border-gray-300 hover:bg-gray-100'
-                        }`}
-                        onClick={() => handleAttributeSelection(attribute._id, value, attribute.name)}
-                      >
-                        {value}
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="flex flex-wrap gap-1">
-                    {attribute.values.map((value, valueIndex) => (
-                      <div
-                        key={valueIndex}
-                        className={`text-xs px-2 py-1 rounded cursor-pointer transition-colors ${
-                          selectedAttributeValues[attribute.name] === value 
-                            ? 'bg-black text-white' 
-                            : 'bg-gray-100 hover:bg-gray-200'
-                        }`}
-                        onClick={() => handleAttributeSelection(attribute._id, value, attribute.name)}
-                      >
-                        {value}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* If no processed attributes but has colors prop, show color options */}
-        {processedAttributes.length === 0 && colors.length > 0 && (
-          <div className="flex mt-2 gap-1">
-            {colors.map((color, index) => (
-              <div
-                key={index}
-                className="w-5 h-5 rounded-full border border-gray-300"
-                style={{ backgroundColor: color }}
-              />
-            ))}
-          </div>
-        )}
       </div>
     </div>
   );

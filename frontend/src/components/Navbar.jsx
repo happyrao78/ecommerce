@@ -116,11 +116,11 @@ const Navbar = () => {
             { name: "Order Tracking", link: "/orders" },
             { name: "My Account", link: "/account" },
         ],
-        Contact: [
-            { name: "Contact Us", link: "/contact" },
-            { name: "About Us", link: "/about" },
-            { name: "FAQs", link: "/faqs" },
-        ],
+        // Contact: [
+        //     { name: "Contact Us", link: "/contact" },
+        //     { name: "About Us", link: "/about" },
+        //     { name: "FAQs", link: "/faqs" },
+        // ],
         // Blog: [
         //     { name: "Blog Grid", link: "/blog/grid" },
         //     { name: "Blog List", link: "/blog/list" },
@@ -255,14 +255,31 @@ const Navbar = () => {
                         ))}
 
                         {/* Quick action buttons */}
-                        <div className="flex gap-3 p-5">
-                            <Link to="/wishlist" className="flex items-center justify-center w-1/2 py-3 bg-gray-100 rounded-md text-sm">
-                                <FaRegHeart className="mr-2" /> Wishlist
-                            </Link>
-                            <Link to="/login" className="flex items-center justify-center w-1/2 py-3 bg-gray-100 rounded-md text-sm">
-                                <FiUser className="mr-2" /> Login
-                            </Link>
-                        </div>
+                        {/* Quick action buttons */}
+<div className="flex gap-3 p-5">
+    <Link to="/wishlist" className="flex items-center justify-center w-1/2 py-3 bg-gray-100 rounded-md text-sm">
+        <FaRegHeart className="mr-2" /> Wishlist
+    </Link>
+    {token ? (
+        <div className="flex flex-col w-1/2 gap-2">
+            <Link to="/account" className="flex items-center justify-center py-3 bg-gray-100 rounded-md text-sm">
+                <FiUser className="mr-2" /> My Account
+            </Link>
+            <button 
+                onClick={() => {
+                    localStorage.removeItem("token");
+                    window.location.href = "/login";
+                }}
+                className="flex items-center justify-center py-3 bg-gray-100 rounded-md text-sm">
+                Logout
+            </button>
+        </div>
+    ) : (
+        <Link to="/login" className="flex items-center justify-center w-1/2 py-3 bg-gray-100 rounded-md text-sm">
+            <FiUser className="mr-2" /> Login
+        </Link>
+    )}
+</div>
 
                         {/* Customer service section */}
                         <div className="p-5">

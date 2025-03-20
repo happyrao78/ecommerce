@@ -1,0 +1,108 @@
+q:hello
+a: Hey, welcome to ShopEasy's digital assistant. How can I help you today?
+
+1. Products & Categories
+Q: What product categories do you offer?
+A: We offer Electronics, Fashion, Home & Kitchen, Beauty, Books, and Sports & Outdoors. Browse all categories at our website.
+
+Q: Do you sell international brands?
+A: Yes, we carry both international and local brands across all our categories.
+
+Q: How do I find products on sale?
+A: Visit our "Deals" section or look for the discount tag on product listings.
+
+Q: Are your products genuine?
+A: Yes, all our products are 100% authentic and sourced directly from authorized distributors.
+
+Q: How do I check if a product is in stock?
+A: Product availability is shown on each product page. If it says "In Stock," you can place your order immediately.
+
+2. Orders & Payments
+Q: How do I place an order?
+A: Add items to your cart, proceed to checkout, enter shipping details, select payment method, and confirm your order.
+
+Q: What payment methods do you accept?
+A: We accept credit/debit cards, net banking, UPI, wallets, and cash on delivery.
+
+Q: How do I check my order status?
+A: Track your order at https://shopeasy.com/track-order or in the "My Orders" section of your account.
+
+Q: Can I cancel my order?
+A: Yes, you can cancel before shipping. Go to "My Orders" and select "Cancel Order."
+
+Q: Is cash on delivery available?
+A: Yes, COD is available for orders under ₹10,000 in most pin codes.
+
+Q: Can I modify my order after placing it?
+A: You cannot modify an order, but you can cancel it and place a new one if it hasn't been shipped.
+
+3. Shipping & Delivery
+Q: How long will it take to deliver my order?
+A: Standard delivery takes 3-5 business days. Premium delivery is available in 1-2 days for select locations.
+
+Q: Do you ship internationally?
+A: Currently, we only ship within India.
+
+Q: Is there a shipping charge?
+A: Free shipping on orders above ₹499. A shipping fee of ₹49 applies for orders below this amount.
+
+Q: How do I know if you deliver to my area?
+A: Enter your PIN code on the product page to check delivery availability.
+
+Q: Can I get same-day delivery?
+A: Same-day delivery is available in select metro cities for orders placed before 12 PM.
+
+4. Returns & Refunds
+Q: What is your return policy?
+A: Most products can be returned within 7 days of delivery. Some categories like electronics have 10-day return periods.
+
+Q: How do I return a product?
+A: Initiate a return from "My Orders," select the reason, and choose pickup or drop-off method.
+
+Q: How long does the refund process take?
+A: Refunds are processed within 5-7 business days after the item is received and inspected.
+
+Q: Can I exchange instead of returning?
+A: Yes, you can choose to exchange for a different size/color if available.
+
+Q: Do I need to return the product in its original packaging?
+A: Yes, please return the product in its original packaging with all tags intact.
+
+5. Account & Profile
+Q: How do I create an account?
+A: Click on "Sign Up" on the top right of our website, enter your details, and verify your email/phone.
+
+Q: How do I reset my password?
+A: Click "Forgot Password" on the login page and follow the instructions sent to your email.
+
+Q: How do I update my delivery address?
+A: Go to "My Account" > "Addresses" to add or edit your delivery addresses.
+
+Q: How do I view my order history?
+A: Go to "My Account" > "My Orders" to see all your past and current orders.
+
+6. Discounts & Offers
+Q: How do I apply a coupon code?
+A: Enter the coupon code in the designated field at checkout before payment.
+
+Q: Do you have any ongoing sales?
+A: Check our "Deals" section for ongoing sales and promotions.
+
+Q: How do I earn and use loyalty points?
+A: You earn 1 point for every ₹100 spent. 100 points = ₹10 discount on future purchases.
+
+7. Customer Support
+Q: What is the customer service number?
+A: You can reach our customer service at 1800-XXX-XXXX from 9 AM to 9 PM all days.
+
+Q: How do I contact your customer service?
+A: Call us, email at support@shopeasy.com, or use the live chat option on our website.
+
+Q: What are your customer service hours?
+A: Our customer service is available from 9 AM to 9 PM, 7 days a week.
+
+Q: Is there a physical store I can visit?
+A: We are an online-only e-commerce platform with no physical stores.
+
+Need more help?
+For further inquiries, please call our helpline or visit our website: https://ecommerce-ui-murex.vercel.app

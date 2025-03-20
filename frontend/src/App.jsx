@@ -34,24 +34,24 @@ import HideGoogleTranslateBar from './components/HideGoogleTranslate'
 
 const App = () => {
   const location = useLocation();
+  const isLoginPage = location.pathname === "/login";
 
   return (
     <>
-   
-      <div className='px-0 sm:px-[5vw] md:px-[7vw] lg:px-[0vw]'><Navbar /> {location.pathname === "/" && <> <Hero /> <Freeship /></>}
-        {location.pathname === "/wishlist" && <> <WishlistHero /></>}
-        {location.pathname === "/collection" && <> <CollectionsHero /></>}
-        {location.pathname === "/cart" && <> <CartHero /></>}
-        {location.pathname === "/place-order" && <> <PlaceOrderHero /></>}
-        {location.pathname === "/account" && <> <AccountHero /></>}
-        {/* {location.pathname === "/category/:categoryName" && <> <CategoryBasedCollectionHero/></>} */}
-
-      </div>
+      {!isLoginPage && (
+        <div className='px-0 sm:px-[5vw] md:px-[7vw] lg:px-[0vw]'>
+          <Navbar /> 
+          {location.pathname === "/" && <> <Hero /> <Freeship /></>}
+          {location.pathname === "/wishlist" && <> <WishlistHero /></>}
+          {location.pathname === "/collection" && <> <CollectionsHero /></>}
+          {location.pathname === "/cart" && <> <CartHero /></>}
+          {location.pathname === "/place-order" && <> <PlaceOrderHero /></>}
+          {location.pathname === "/account" && <> <AccountHero /></>}
+        </div>
+      )}
 
       <div className='px-4 sm:px-[5vw] md:px-[7vw] lg:px-[6vw]'>
-
-
-        <SearchBar />
+        {!isLoginPage && <SearchBar />}
         <ToastContainer />
         <Routes>
           <Route path="/" element={<Home />} />
@@ -66,10 +66,9 @@ const App = () => {
           <Route path="/verify" element={<Verify />} />
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/account" element={<Account />} />
-
         </Routes>
-
       </div>
+
       <div className='px-0 sm:px-[5vw] md:px-[7vw] lg:px-[0vw]'>
         <Routes>
           <Route path="/category/:categoryName" element={
@@ -89,16 +88,16 @@ const App = () => {
             </>} />
         </Routes>
 
-        <Footer />
+        {!isLoginPage && <Footer />}
       </div>
 
-      <BottomMobileMenu />
-      <SlideCart />
-      <CategorySliderMobile />
-
-
-
-
+      {!isLoginPage && (
+        <>
+          <BottomMobileMenu />
+          <SlideCart />
+          <CategorySliderMobile />
+        </>
+      )}
     </>
   )
 }

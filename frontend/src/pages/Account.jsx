@@ -1,61 +1,3 @@
-// import React, { useContext, useEffect, useState } from 'react'
-// import axios from 'axios';
-// import { ShopContext } from '../context/ShopContext';
-
-
-// const Account = () => {
-
-//     const { backendUrl, token } = useContext(ShopContext)
-//     const [userData, setUserData]=useState({})
-//     const [orderData, setOrderData]=useState({})
-
-
-//     useEffect(()=>{
-//         getUserDetails(token)
-//         getUserOrders(token)
-
-//     },[])
-
-//     useEffect(()=>{
-//         console.log(userData)
-//     },[userData])
-
-//     useEffect(()=>{
-//         console.log("OrderData",orderData)
-//     },[orderData])
-
-//     const getUserDetails = async (token) => {
-//         try {
-//             const response = await axios.get(`${backendUrl}/api/user/get-user`, {
-//                 headers: { token }
-//             });
-//             console.log(response.data.user)
-//             setUserData(response.data.user)
-//         } catch (error) {
-//             console.error('There was a problem with the fetch operation:', error);
-//         }
-//     };
-
-
-//     const getUserOrders = async (token) => {
-//         try {
-//             const response = await axios.post(`${backendUrl}/api/order/userorders`, {token}, {
-//                 headers: { token }
-//             });
-//             console.log("OrderData",response.data.orders)
-//             setOrderData(response.data.orders)
-//         } catch (error) {
-//             console.error('There was a problem with the fetch operation:', error);
-//         }
-//     };
-
-
-//     return (
-//         <div>Account</div>
-//     )
-// }
-
-// export default Account
 
 
 import React, { useContext, useEffect, useState } from 'react'
@@ -78,11 +20,12 @@ const Account = () => {
     const [isLoading, setIsLoading] = useState(true)
 
     const logout = () => {
-        navigate("/login")
-        localStorage.removeItem("token")
-        setToken("");
-        setCartItems({})
         // navigate("/login")
+        localStorage.removeItem("token")
+        // setToken("");
+        // setCartItems({})
+        // navigate("/login")
+        window.location.href = "/login";
         
     }
 
@@ -194,7 +137,7 @@ const Account = () => {
                         <Link>
                             <Button
                                 className=" w-full sm:w-full"
-                                onClick={logout}
+                                onClick={ logout}
                             >
                                 Logout
                             </Button>
