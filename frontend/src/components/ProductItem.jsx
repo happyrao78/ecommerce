@@ -135,10 +135,10 @@ const ProductItem = ({ id, image, name, price, originalPrice, colors = [], attri
     <div className="mb-4 group">
       <div className="relative overflow-hidden rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
         {/* Image Section - Reduced height on mobile */}
-        <div className="overflow-hidden h-40 sm:h-48 lg:h-64 relative rounded-t-lg bg-gray-50 flex flex-col justify-center items-center">
+        <div className="overflow-hidden h-40 sm:h-48 lg:h-80 relative rounded-t-lg bg-gray-50 flex flex-col justify-center items-center">
           <Link to={`/product/${id}`} className="text-gray-800 cursor-pointer block">
             <img
-              className="absolute inset-0 h-full w-full object-cover transition-transform ease-in-out lg:group-hover:scale-105 lg:group-hover:opacity-0"
+              className="absolute inset-0 h-full w-full object-cover transition-transform ease-in-out lg:group-hover:scale-105 lg:group-hover:opacity-0 object-top"
               src={image[0]}
               alt={name}
               loading="lazy"
