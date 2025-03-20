@@ -1,11 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useContext } from "react";
 import { motion } from "framer-motion";
 import { FaWhatsapp } from "react-icons/fa";
+import {ShopContext} from "../context/shopContext";
 
 const WhatsAppChat = () => {
     const [phoneNumber, setPhoneNumber] = useState("");
+    const { backendUrl } = useContext(ShopContext);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -13,7 +15,7 @@ const WhatsAppChat = () => {
         const fetchAdminPhone = async () => {
             try {
                 setIsLoading(true);
-                const response = await fetch("https://ecommerce-production-a805.up.railway.app/api/admin/admin-phone");
+                const response = await fetch(backendUrl + "/api/admin/admin-phone");
                 
                 if (!response.ok) {
                     throw new Error("Failed to fetch admin phone number");

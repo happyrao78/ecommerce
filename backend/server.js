@@ -23,6 +23,19 @@ const port =process.env.PORT
 connectDB();
 connectCloudinary();
 
+const allowedOrigins = ["http://localhost:5174","http://localhost:5173","https://ecommerce-admin-gamma-ruby.vercel.app","https://ecommerce-ui-murex.vercel.app","*"];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true, 
+}));
+
 //Middlewares
 
 app.use(express.json())
