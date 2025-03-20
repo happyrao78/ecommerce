@@ -116,11 +116,11 @@ const Navbar = () => {
             { name: "Order Tracking", link: "/orders" },
             { name: "My Account", link: "/account" },
         ],
-        Contact: [
-            { name: "Contact Us", link: "/contact" },
-            { name: "About Us", link: "/about" },
-            { name: "FAQs", link: "/faqs" },
-        ],
+        // Contact: [
+        //     { name: "Contact Us", link: "/contact" },
+        //     { name: "About Us", link: "/about" },
+        //     { name: "FAQs", link: "/faqs" },
+        // ],
         // Blog: [
         //     { name: "Blog Grid", link: "/blog/grid" },
         //     { name: "Blog List", link: "/blog/list" },

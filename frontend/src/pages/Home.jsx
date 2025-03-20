@@ -14,6 +14,7 @@ import Top from '../components/Top'
 import New from '../components/New'
 import Hot from '../components/Hot'
 import Popular from '../components/Popular'
+import ChatBot from '../components/Chatbot'
 // import Freeship from '../components/Freeship'
 
 const Home = () => {
@@ -30,9 +31,9 @@ const Home = () => {
         <New />
         <Hot />
         <Popular />
-        <WhatsAppChat />
+        {/* <WhatsAppChat /> */}
         <OurPolicy/>
-        
+        <ChatBot />
         <HomeFeedback/>
         {/* <NewsLetterBox/> */}
         
