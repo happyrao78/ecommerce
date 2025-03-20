@@ -24,7 +24,12 @@ const ShopContextProvider = (props) => {
     const [fromCurrency, setFromCurrency] = useState("INR"); // Default is INR
     const [toCurrency, setToCurrency] = useState("INR"); // Default is INR
     const [conversionRate, setConversionRate] = useState(1); // Default conversion rate
-    const supportedCurrencies = ["INR", "USD", "EUR", "GBP"]; // Add more as needed
+    const supportedCurrencies = [
+        "INR", "USD", "EUR", "GBP", "AUD", "CAD", "SGD", "JPY", "CNY", 
+        "CHF", "HKD", "NZD", "SEK", "NOK", "KRW", "AED", "ZAR", "BRL", 
+        "MXN", "RUB", "TRY", "SAR"
+      ];
+       // Add more as needed
     const delivery_fee = 10 * conversionRate;
 
     const fetchConversionRate = async (fromCurrency,toCurrency) => {
@@ -387,7 +392,7 @@ const ShopContextProvider = (props) => {
             setToken(localStorage.getItem("token"));
             getUserCart(localStorage.getItem("token"));
             getUserWishlist(localStorage.getItem("token"));
-            fetchConversionRate(currency);
+           
         }
     })
 

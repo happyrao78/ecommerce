@@ -387,7 +387,7 @@ import { Truck, HelpCircle, Share2, Clock, RotateCcw, MapPin } from 'lucide-reac
 const Product = () => {
 
   const { productId } = useParams();
-  const { products, currency, addToCart, navigate, token, backendUrl, updateQuantity, cartItems } = useContext(ShopContext);
+  const { products, currency, addToCart, navigate, token, backendUrl, updateQuantity, cartItems,conversionRate } = useContext(ShopContext);
   const [reviews, setReviews] = useState([]);
   const [productData, setProductData] = useState(false);
   const [image, setImage] = useState('');
@@ -684,7 +684,7 @@ const Product = () => {
             )}
           </div>
           <div className='flex gap-x-2 items-center'>
-            <p className='text-2xl font-semibold flex items-center'>{currency}{productData.price}</p>
+            <p className='text-2xl font-semibold flex items-center'>{currency} {(productData.price * conversionRate).toFixed(2)}</p>
             <p className='text-md text-gray-500 line-through flex items-center'>{currency}{productData.originalPrice}</p>
             <h5 className='ml-2 bg-red-500 text-white text-xs font-bold flex items-center py-1 px-2 rounded-full'>-{discount}%</h5>
           </div>

@@ -89,3 +89,50 @@ li.slick-active{
 .animate-marquee2 {
   animation: marquee2 30s linear infinite;
 }
+
+.language-selector {
+  position: relative;
+  display: inline-block;
+  margin: 10px;
+}
+
+.language-selector select {
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background-color: white;
+  font-size: 14px;
+  min-width: 120px;
+}
+
+.language-selector select:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.language-loading-indicator,
+.script-loading-indicator {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 5px;
+  font-size: 12px;
+  color: #666;
+  white-space: nowrap;
+}
+
+.language-loading-indicator {
+  color: #0066cc;
+}
+
+/* Hide Google Translate's default widget */
+.goog-te-banner-frame {
+  display: none !important;
+}
+.goog-te-menu-value:hover {
+  text-decoration: none !important;
+}
+.goog-text-highlight {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}

@@ -30,12 +30,14 @@ import CategoryBasedCollection, { CategoryBasedCollectionHero } from './pages/Ca
 import SubCategoryBasedCollection, { SubCategoryBasedCollectionHero } from './pages/SubCategoryBasedCollection'
 import Account from './pages/Account'
 import AccountHero from './components/AccountHero'
+import HideGoogleTranslateBar from './components/HideGoogleTranslate'
 
 const App = () => {
   const location = useLocation();
 
   return (
     <>
+   
       <div className='px-0 sm:px-[5vw] md:px-[7vw] lg:px-[0vw]'><Navbar /> {location.pathname === "/" && <> <Hero /> <Freeship /></>}
         {location.pathname === "/wishlist" && <> <WishlistHero /></>}
         {location.pathname === "/collection" && <> <CollectionsHero /></>}

@@ -454,12 +454,12 @@ const getTotalAmount = () => {
   <div className='space-y-2'>
     <div className='flex justify-between'>
       <span>Subtotal:</span>
-      <span>{currency} {getCartAmount()}</span>
+      <span>{currency} {getCartAmount().toFixed(2)}</span>
     </div>
     
     <div className='flex justify-between'>
       <span>Delivery Fee:</span>
-      <span>{currency} {delivery_fee}</span>
+      <span>{currency} {delivery_fee.toFixed(2)}</span>
     </div>
     
     {appliedCoupon && (

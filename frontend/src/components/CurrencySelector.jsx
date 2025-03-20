@@ -12,7 +12,7 @@ const CurrencySelector = () => {
                 setFromCurrency("INR")
                 setToCurrency(e.target.value)
 } }
-            className="border p-2 rounded-md"
+            className="rounded-md "
         >
             {supportedCurrencies.map((cur) => (
                 <option key={cur} value={cur}>

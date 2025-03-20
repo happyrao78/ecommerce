@@ -6,6 +6,8 @@ import payment2 from "../assets/ecommerce-islam/payment2.png";
 import payment3 from "../assets/ecommerce-islam/payment3.png";
 import { FaArrowUp, FaFacebookF, FaInstagram, FaPaypal, FaPinterestP, FaTiktok, FaTwitter } from 'react-icons/fa6';
 import CurrencySelector from './CurrencySelector';
+import CustomTranslate from './CustomTranslate';
+import HideGoogleTranslateBar from './HideGoogleTranslate';
 
 const Footer = () => {
   return (
@@ -128,8 +130,10 @@ const Footer = () => {
           </div>
         </div> */}
 
-        <div>
+        <div className='flex gap-4'>
           <CurrencySelector/>
+          <HideGoogleTranslateBar/>
+          <CustomTranslate/>
         </div>
 
         <div className='flex items-center gap-2 mt-4 sm:mt-0'>
