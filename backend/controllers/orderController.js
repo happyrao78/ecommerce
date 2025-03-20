@@ -20,15 +20,15 @@ const razorpayInstance = new razorpay({
 
 const placeOrder = async(req,res)=>{
     try {
-        const {userId,items,amount,originalAmount,discountAmount,couponCode,address}= req.body
+        const {userId,items,amount,originalAmount,discountAmount,couponCode,address,conversionRate,currency}= req.body
 
     const orderData = {
         userId,
         items,
         address,
-        amount : originalAmount - discountAmount,
-        originalAmount : originalAmount || amount ,
-        discountAmount : discountAmount || 0,
+        amount : (originalAmount - discountAmount)*conversionRate,
+        originalAmount : originalAmount*conversionRate || amount ,
+        discountAmount : discountAmount*conversionRate || 0,
         couponCode : couponCode || "",
         paymentMethod:"COD",
         payment:false,
@@ -140,17 +140,19 @@ const verifyStripe = async(req,res)=>{
 const placeOrderRazorpay = async(req,res)=>{
     try {
 
-        const {userId,items,amount,address}= req.body
+        const {userId,items,amount,address,currency,conversionRate}= req.body
         // const {origin} = req.headers
 
         const orderData = {
             userId,
             items,
             address,
-            amount,
+            amount:Number(amount.toFixed(2)),
             paymentMethod:"Razorpay",
             payment:false,
-            date:Date.now()
+            date:Date.now(),
+            currency,
+            conversionRate
         }
 
         const newOrder = new orderModel(orderData)

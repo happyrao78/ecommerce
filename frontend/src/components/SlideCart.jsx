@@ -133,7 +133,7 @@ import { assets } from '../assets/frontend_assets/assets';
 const FREE_SHIPPING_THRESHOLD = 10000;
 
 const SlideCart = () => {
-  const { products, currency, cartItems, updateQuantity, navigate } = useContext(ShopContext);
+  const { products, currency, cartItems, updateQuantity, navigate,conversionRate } = useContext(ShopContext);
   const { isSlideCartOpen, closeSlideCart } = useContext(UiContext);
   const [cartData, setCartData] = useState([]);
 
@@ -202,7 +202,7 @@ const SlideCart = () => {
                       <p key={index} className="px-2 py-1 border bg-gray-50 text-xs rounded-md">{value}</p>
                     ))}
                   </div>
-                  <p className="text-gray-600 mt-2">{currency}{productData.price}</p>
+                  <p className="text-gray-600 mt-2">{currency} {(productData.price * conversionRate).toFixed(2)}</p>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className='flex items-center border rounded-full px-3 py-1 shadow-sm'>

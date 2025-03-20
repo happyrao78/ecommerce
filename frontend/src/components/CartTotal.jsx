@@ -23,7 +23,7 @@ const CartTotal = () => {
         {/* Subtotal */}
         <div className='flex justify-between '>
           <p>SubTotal</p>
-          <p>{currency}{getCartAmount()}.00</p>
+          <p>{currency} {getCartAmount().toFixed(2)}</p>
         </div>
         <hr className='flex justify-between border-b border-gray-200' />
 
@@ -32,11 +32,11 @@ const CartTotal = () => {
           <p>Shipping Fee</p>
           {isFreeShipping ? (
             <div className='flex items-center gap-2'>
-              <p className='line-through text-gray-400'>{currency}{delivery_fee}.00</p>
+              <p className='line-through text-gray-400'>{currency} {delivery_fee}</p>
               <p className='text-green-600 font-semibold'>Free Shipping</p>
             </div>
           ) : (
-            <p>{currency}{delivery_fee}.00</p>
+            <p>{currency} {delivery_fee.toFixed(2)}</p>
           )}
         </div>
         <hr className='flex justify-between border-b border-gray-200' />
@@ -45,8 +45,7 @@ const CartTotal = () => {
         <div className='flex justify-between'>
           <b>Total</b>
           <b>
-            {currency}
-            {getCartAmount() === 0 ? 0 : getCartAmount() + finalDeliveryFee}.00
+            {currency} {getCartAmount() === 0 ? 0 : (getCartAmount() + finalDeliveryFee).toFixed(2)}
           </b>
         </div>
         <hr className='flex justify-between border-b border-gray-200' />

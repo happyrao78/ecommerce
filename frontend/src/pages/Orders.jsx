@@ -5,7 +5,7 @@ import axios from 'axios'
 import Button from '../components/Button'
 
 const Orders = () => {
-  const { backendUrl, currency, token } = useContext(ShopContext)
+  const { backendUrl, currency, token,conversionRate } = useContext(ShopContext)
 
   const [orderData, setOrderData] = useState([])
   const [filteredOrders, setFilteredOrders] = useState([])
@@ -23,6 +23,8 @@ const loadOrderData = async () => {
     
     if (response.data.success) {
       let allOrdersItem = [];
+
+      console.log(response.data.orders)
 
       response.data.orders.map((order) => {
         // Store order-level discount information
@@ -44,11 +46,13 @@ const loadOrderData = async () => {
           item["payment"] = order.payment;
           item["paymentMethod"] = order.paymentMethod;
           item["date"] = order.date;
-          item["discountAmount"] = itemDiscountAmount;
-          item["originalPrice"] = order.originalAmount;
-          item["discountedPrice"] = order.amount;
+          item["orderAmount"] = order.amount;
+          // item["originalPrice"] = order.originalAmount;
+          // item["discountedPrice"] = order.amount;
           item["couponCode"] = orderCouponCode;
           item["orderId"] = order._id;
+          item["conversionRate"] = order.conversionRate ? order.conversionRate: 1;
+          item["currency"] = order.currency ? order.currency: "INR";
           
           allOrdersItem.push(item);
         });
@@ -92,6 +96,7 @@ const loadOrderData = async () => {
 
   useEffect(() => {
     loadOrderData();
+    console.log(orderData)
   }, [token])
 
   return (
@@ -141,20 +146,11 @@ const loadOrderData = async () => {
   </div>
   <div className='flex flex-col gap-1 '>
     <p className="text-xs text-gray-500">TOTAL</p>
-    {item.discountAmount > 0 ? (
-      <div>
-        <p className="text-xs lg:text-sm font-medium text-nowrap line-through text-gray-500">
-          {currency}{item.originalPrice.toFixed(2)}
-        </p>
-        <p className="text-xs lg:text-sm font-medium text-nowrap text-green-600">
-          {currency}{item.discountedPrice.toFixed(2)}
-        </p>
-      </div>
-    ) : (
+    {
       <p className="text-xs lg:text-sm font-medium text-nowrap">
-        {currency}{(item.price * item.quantity).toFixed(2)}
+        {item.currency} {(item.price*item.conversionRate* item.quantity).toFixed(2)}
       </p>
-    )}
+    }
   </div>
   <div className="hidden sm:block">
     <p className="text-xs text-gray-500">PAYMENT</p>
@@ -192,7 +188,7 @@ const loadOrderData = async () => {
     <p className="text-sm text-gray-600 mb-2">Qty: {item.quantity}</p>
     <p className="text-sm text-gray-600 block sm:hidden">Payment: {item.paymentMethod}</p>
     
-    {/* Show coupon information if applied */}
+    {/* Show coupon information if applied
     {item.couponCode && (
       <div className="mt-1 mb-2">
         <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
@@ -204,7 +200,7 @@ const loadOrderData = async () => {
           </p>
         )}
       </div>
-    )}
+    )} */}
     
     <div className="hidden sm:block mt-2 text-sm text-gray-500">
       <p>Order ID: {item.orderId.slice(-6)}</p>

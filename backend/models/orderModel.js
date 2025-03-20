@@ -20,7 +20,10 @@ const orderSchema = new mongoose.Schema({
   },
   couponCode: {
     type: String
-  }
+  },
+  conversionRate:{type:Number,required:true},
+  currency:{type:String,required:true},
+
 
     
 

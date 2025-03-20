@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import { ShoppingBag, Heart, Maximize2, Plus, Eye, Award, Package } from "lucide-react";
 
 const ProductItem = ({ id, image, name, price, originalPrice, colors = [], attributes = [], quantity }) => {
-  const { currency, addToCart, addToWishlist, removeFromWishlist, navigate, isInWishlist, token, backendUrl } = useContext(ShopContext);
+  const { currency, addToCart, addToWishlist, removeFromWishlist, navigate, isInWishlist, token, backendUrl,conversionRate } = useContext(ShopContext);
   const [isLoading, setIsLoading] = useState(true);
   const { openSlideCart } = useContext(UiContext);
   const [attributesList, setAttributesList] = useState([]);
@@ -49,6 +49,9 @@ const ProductItem = ({ id, image, name, price, originalPrice, colors = [], attri
   useEffect(() => {
     fetchAttributes();
   }, [token]);
+
+  const convertedPrice = conversionRate * price
+  const convertedOriginalPrice = conversionRate * originalPrice
 
   // Process attributes when attribute list is available
   useEffect(() => {
@@ -233,11 +236,12 @@ const ProductItem = ({ id, image, name, price, originalPrice, colors = [], attri
         <div className="flex items-center mt-1 justify-between">
           <div className="flex items-center">
             <p className="text-sm font-semibold text-gray-800">
-              {currency}{price.toFixed(2)}
+              {/* {currency}{price.toFixed(2)} */}
+              {currency} {convertedPrice.toFixed(2)}
             </p>
             {originalPrice > 0 && price < originalPrice && (
               <p className="text-xs text-gray-500 line-through ml-2">
-                {currency}{originalPrice.toFixed(2)}
+                {currency} {convertedOriginalPrice.toFixed(2)}
               </p>
             )}
           </div>

@@ -9,8 +9,8 @@ export const ShopContext = createContext();
 
 const ShopContextProvider = (props) => {
 
-    const currency = "₹ ";
-    const delivery_fee = 10;
+    // const currency = "₹ ";
+    
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
     const [search, setSearch] = useState('');
     const [showSearch, setShowSearch] = useState(false);
@@ -20,6 +20,35 @@ const ShopContextProvider = (props) => {
     const [token, setToken] = useState("")
     const [subCategoryData, setSubCategoryData] = useState("")
     const [wishlistItems, setWishlistItems] = useState({});
+    const [currency, setCurrency] = useState("INR"); // Default is INR
+    const [fromCurrency, setFromCurrency] = useState("INR"); // Default is INR
+    const [toCurrency, setToCurrency] = useState("INR"); // Default is INR
+    const [conversionRate, setConversionRate] = useState(1); // Default conversion rate
+    const supportedCurrencies = ["INR", "USD", "EUR", "GBP"]; // Add more as needed
+    const delivery_fee = 10 * conversionRate;
+
+    const fetchConversionRate = async (fromCurrency,toCurrency) => {
+        try {
+            const response = await axios.get(`https://v6.exchangerate-api.com/v6/3988bc920f2d29ad3b90090a/pair/${fromCurrency}/${toCurrency}`);
+            console.log(fromCurrency,toCurrency)
+            setConversionRate(response.data.conversion_rate);
+            setCurrency(toCurrency)
+        } catch (error) {
+            console.error("Error fetching currency rates:", error);
+            toast.error("Failed to fetch currency rates");
+        }
+    };
+    
+    const changeCurrency = () => {
+        // console.log(fromCurrency,toCurrency)
+        // fetchConversionRate(fromCurrency,toCurrency);
+        
+    };
+
+    useEffect(()=>{
+        console.log(`Conversion Rate from ${fromCurrency} to ${toCurrency}`,conversionRate)
+    },[conversionRate])
+    
 
 
 
@@ -123,7 +152,8 @@ const ShopContextProvider = (props) => {
                     // Find the product details for the current itemId
                     const itemInfo = products.find((product) => product._id === itemId);
                     if (itemInfo) {
-                        totalAmount += itemInfo.price * item.quantity;
+                        const convertedPrice = conversionRate * itemInfo.price
+                        totalAmount += convertedPrice * item.quantity;
                     }
                 }
             } catch (error) {
@@ -134,7 +164,31 @@ const ShopContextProvider = (props) => {
         return totalAmount;
     };
 
-   
+
+    // const getCartAmount = () => {
+    //     let totalAmount = 0;
+    
+    //     for (const cartItemKey in cartItems) {
+    //         const item = cartItems[cartItemKey];
+    
+    //         try {
+    //             if (item && item.quantity > 0) {
+    //                 const itemId = item.itemId || cartItemKey.split('_')[0];
+    //                 const itemInfo = products.find((product) => product._id === itemId);
+    //                 if (itemInfo) {
+    //                     const convertedPrice = (itemInfo.price * conversionRates[currency]).toFixed(2);
+    //                     totalAmount += convertedPrice * item.quantity;
+    //                 }
+    //             }
+    //         } catch (error) {
+    //             console.error(error);
+    //         }
+    //     }
+    
+    //     return totalAmount;
+    // };
+    
+
 
     const getProductsData = async () => {
         try {
@@ -160,7 +214,7 @@ const ShopContextProvider = (props) => {
     const getSubCategoryData = async () => {
         try {
             const response = await axios.get(`${backendUrl}/api/category/getSubCategory`);
-            console.log("SubCategory",response.data);
+            console.log("SubCategory", response.data);
             if (response.data.success) {
                 const subCategoryData = response.data.categories.reduce((acc, category) => {
                     acc[category.category] = category.subcategories;
@@ -177,55 +231,27 @@ const ShopContextProvider = (props) => {
         }
     };
 
- 
-// Add to wishlist
-const addToWishlist = async (itemId, selectedAttributeValues) => {
-    let wishlistData = structuredClone(wishlistItems);
 
-    // Create a unique key for this item + attributes combination
-    const attributesKey = JSON.stringify(selectedAttributeValues || {});
-    const wishlistItemKey = `${itemId}_${attributesKey}`;
+    // Add to wishlist
+    const addToWishlist = async (itemId, selectedAttributeValues) => {
+        let wishlistData = structuredClone(wishlistItems);
 
-    // Store the item in wishlist
-    wishlistData[wishlistItemKey] = {
-        itemId,
-        attributes: selectedAttributeValues,
-    };
+        // Create a unique key for this item + attributes combination
+        const attributesKey = JSON.stringify(selectedAttributeValues || {});
+        const wishlistItemKey = `${itemId}_${attributesKey}`;
 
-    setWishlistItems(wishlistData);
+        // Store the item in wishlist
+        wishlistData[wishlistItemKey] = {
+            itemId,
+            attributes: selectedAttributeValues,
+        };
 
-    if (token) {
-        try {
-            const response = await axios.post(
-                backendUrl + "/api/wishlist/add",
-                { itemId, selectedAttributeValues },
-                { headers: { token } }
-            );
-            if (response.data.message) {
-                toast.success(response.data.message);
-            }
-        } catch (error) {
-            console.log(error);
-            toast.error(error.message);
-        }
-    }
-};
-
-// Remove from wishlist
-const removeFromWishlist = async (itemId, selectedAttributeValues) => {
-    let wishlistData = structuredClone(wishlistItems);
-
-    const attributesKey = JSON.stringify(selectedAttributeValues || {});
-    const wishlistItemKey = `${itemId}_${attributesKey}`;
-
-    if (wishlistData[wishlistItemKey]) {
-        delete wishlistData[wishlistItemKey];
         setWishlistItems(wishlistData);
 
         if (token) {
             try {
                 const response = await axios.post(
-                    backendUrl + "/api/wishlist/remove",
+                    backendUrl + "/api/wishlist/add",
                     { itemId, selectedAttributeValues },
                     { headers: { token } }
                 );
@@ -237,68 +263,96 @@ const removeFromWishlist = async (itemId, selectedAttributeValues) => {
                 toast.error(error.message);
             }
         }
-    }
-};
+    };
 
-// Move from wishlist to cart
-const moveToCart = async (itemId, selectedAttributeValues) => {
-    const attributesKey = JSON.stringify(selectedAttributeValues || {});
-    const wishlistItemKey = `${itemId}_${attributesKey}`;
+    // Remove from wishlist
+    const removeFromWishlist = async (itemId, selectedAttributeValues) => {
+        let wishlistData = structuredClone(wishlistItems);
 
-    if (wishlistItems[wishlistItemKey]) {
-        // First add to cart
-        await addToCart(itemId, selectedAttributeValues);
+        const attributesKey = JSON.stringify(selectedAttributeValues || {});
+        const wishlistItemKey = `${itemId}_${attributesKey}`;
 
-        // Then remove from wishlist
-        await removeFromWishlist(itemId, selectedAttributeValues);
+        if (wishlistData[wishlistItemKey]) {
+            delete wishlistData[wishlistItemKey];
+            setWishlistItems(wishlistData);
 
-        if (token) {
-            try {
-                const response = await axios.post(
-                    backendUrl + "/api/wishlist/move-to-cart",
-                    { itemId, selectedAttributeValues },
-                    { headers: { token } }
-                );
-                if (response.data.message) {
-                    toast.success(response.data.message);
+            if (token) {
+                try {
+                    const response = await axios.post(
+                        backendUrl + "/api/wishlist/remove",
+                        { itemId, selectedAttributeValues },
+                        { headers: { token } }
+                    );
+                    if (response.data.message) {
+                        toast.success(response.data.message);
+                    }
+                } catch (error) {
+                    console.log(error);
+                    toast.error(error.message);
                 }
-            } catch (error) {
-                console.log(error);
-                toast.error(error.message);
             }
         }
-    }
-};
+    };
 
-// Get wishlist count
-const getWishlistCount = () => {
-    return Object.keys(wishlistItems).length;
-};
+    // Move from wishlist to cart
+    const moveToCart = async (itemId, selectedAttributeValues) => {
+        const attributesKey = JSON.stringify(selectedAttributeValues || {});
+        const wishlistItemKey = `${itemId}_${attributesKey}`;
 
-// Check if item is in wishlist
-const isInWishlist = (itemId, selectedAttributeValues) => {
-    const attributesKey = JSON.stringify(selectedAttributeValues || {});
-    const wishlistItemKey = `${itemId}_${attributesKey}`;
-    return !!wishlistItems[wishlistItemKey];
-};
+        if (wishlistItems[wishlistItemKey]) {
+            // First add to cart
+            await addToCart(itemId, selectedAttributeValues);
 
-// Get user's wishlist from the backend
-const getUserWishlist = async (token) => {
-    try {
-        const response = await axios.post(
-            backendUrl + "/api/wishlist/get",
-            {},
-            { headers: { token } }
-        );
+            // Then remove from wishlist
+            await removeFromWishlist(itemId, selectedAttributeValues);
 
-        if (response.data.success) {
-            setWishlistItems(response.data.wishlistData);
+            if (token) {
+                try {
+                    const response = await axios.post(
+                        backendUrl + "/api/wishlist/move-to-cart",
+                        { itemId, selectedAttributeValues },
+                        { headers: { token } }
+                    );
+                    if (response.data.message) {
+                        toast.success(response.data.message);
+                    }
+                } catch (error) {
+                    console.log(error);
+                    toast.error(error.message);
+                }
+            }
         }
-    } catch (error) {
-        console.log(error);
-        toast.error(error.message);
-    }
-};
+    };
+
+    // Get wishlist count
+    const getWishlistCount = () => {
+        return Object.keys(wishlistItems).length;
+    };
+
+    // Check if item is in wishlist
+    const isInWishlist = (itemId, selectedAttributeValues) => {
+        const attributesKey = JSON.stringify(selectedAttributeValues || {});
+        const wishlistItemKey = `${itemId}_${attributesKey}`;
+        return !!wishlistItems[wishlistItemKey];
+    };
+
+    // Get user's wishlist from the backend
+    const getUserWishlist = async (token) => {
+        try {
+            const response = await axios.post(
+                backendUrl + "/api/wishlist/get",
+                {},
+                { headers: { token } }
+            );
+
+            if (response.data.success) {
+                setWishlistItems(response.data.wishlistData);
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error(error.message);
+        }
+    };
 
 
 
@@ -317,7 +371,7 @@ const getUserWishlist = async (token) => {
     }
 
 
-    
+
 
 
 
@@ -333,6 +387,7 @@ const getUserWishlist = async (token) => {
             setToken(localStorage.getItem("token"));
             getUserCart(localStorage.getItem("token"));
             getUserWishlist(localStorage.getItem("token"));
+            fetchConversionRate(currency);
         }
     })
 
@@ -346,7 +401,12 @@ const getUserWishlist = async (token) => {
         removeFromWishlist,
         moveToCart,
         getWishlistCount,
-        isInWishlist
+        isInWishlist,
+    changeCurrency,
+    conversionRate,
+    supportedCurrencies,
+    fromCurrency,setFromCurrency,toCurrency,setToCurrency,
+    fetchConversionRate
     }
 
     return (

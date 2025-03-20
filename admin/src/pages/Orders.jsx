@@ -120,6 +120,8 @@ const TrackingLinkModal = () => (
         { headers: { token } }
       );
 
+      console.log(response)
+
       if (response.data.success) {
         const sortedOrders = response.data.orders.sort((a, b) => new Date(b.date) - new Date(a.date));
         setOrders(sortedOrders);
@@ -400,7 +402,7 @@ const TrackingLinkModal = () => (
                         <div>
                           <div className="text-gray-500 text-sm mb-1">Total Amount</div>
                           <div className="text-lg font-bold text-gray-900">
-                            {currency}{order.amount.toFixed(2)}
+                            {order.currency} {order.amount.toFixed(2)}
                           </div>
                           <div className="flex items-center mt-2">
                             <CreditCard size={14} className="text-gray-400 mr-2" />
@@ -460,7 +462,7 @@ const TrackingLinkModal = () => (
             <div className="mt-4 md:mt-0">
               <div className="text-sm text-gray-500 mb-1">Total Amount</div>
               <div className="text-2xl font-bold text-gray-900">
-                {currency}{selectedOrder.amount.toFixed(2)}
+                {selectedOrder.currency} {selectedOrder.amount.toFixed(2)}
               </div>
             </div>
           </div>
@@ -566,37 +568,39 @@ const TrackingLinkModal = () => (
                       {item.quantity}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {currency}{(item.price || 50.47).toFixed(2)}
+                      {selectedOrder.currency} {(item.price*
+                        selectedOrder.conversionRate || 0).toFixed(2)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {currency}{((item.price || 50.47) * item.quantity).toFixed(2)}
+                      {selectedOrder.currency} {((item.price*
+                        selectedOrder.conversionRate || 0) * item.quantity).toFixed(2)}
                     </td>
                   </tr>
                 ))}
               </tbody>
               <tfoot className="bg-gray-50">
-                <tr>
+                {/* <tr>
                   <td colSpan="2" className="px-6 py-4 whitespace-nowrap"></td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500">Subtotal</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {currency}{(selectedOrder.amount - 15).toFixed(2)}
+                    {selectedOrder.currency} {(selectedOrder.amount - 15).toFixed(2)}
                   </td>
-                </tr>
+                </tr> */}
                 <tr>
                   <td colSpan="2" className="px-6 py-4 whitespace-nowrap"></td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500">Shipping</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{currency}10.00</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{selectedOrder.currency} {10*selectedOrder.conversionRate} </td>
                 </tr>
-                <tr>
+                {/* <tr>
                   <td colSpan="2" className="px-6 py-4 whitespace-nowrap"></td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500">Tax</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{currency}5.00</td>
-                </tr>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{selectedOrder.currency} {5 * selectedOrder.currency}</td>
+                </tr> */}
                 <tr>
                   <td colSpan="2" className="px-6 py-4 whitespace-nowrap"></td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Total</td>
                   <td className="px-6 py-4 whitespace-nowrap text-base font-bold text-gray-900">
-                    {currency}{selectedOrder.amount.toFixed(2)}
+                    {selectedOrder.currency} {selectedOrder.amount.toFixed(2)}
                   </td>
                 </tr>
               </tfoot>

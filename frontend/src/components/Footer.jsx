@@ -5,6 +5,7 @@ import visa from "../assets/ecommerce-islam/visa.png";
 import payment2 from "../assets/ecommerce-islam/payment2.png";
 import payment3 from "../assets/ecommerce-islam/payment3.png";
 import { FaArrowUp, FaFacebookF, FaInstagram, FaPaypal, FaPinterestP, FaTiktok, FaTwitter } from 'react-icons/fa6';
+import CurrencySelector from './CurrencySelector';
 
 const Footer = () => {
   return (
@@ -126,6 +127,10 @@ const Footer = () => {
             </select>
           </div>
         </div> */}
+
+        <div>
+          <CurrencySelector/>
+        </div>
 
         <div className='flex items-center gap-2 mt-4 sm:mt-0'>
           <p className='mr-2'>Payment:</p>

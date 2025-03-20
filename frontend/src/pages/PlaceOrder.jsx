@@ -15,7 +15,7 @@ import paypal from "../assets/ecommerce-islam/paypal.png";
 
 const PlaceOrder = () => {
 
-  const { navigate, backendUrl, cartItems, setCartItems, token, getCartAmount, delivery_fee, products, currency, updateQuantity } = useContext(ShopContext)
+  const { navigate, backendUrl, cartItems, setCartItems, token, getCartAmount, delivery_fee, products, currency, updateQuantity ,conversionRate} = useContext(ShopContext)
   const [method, setMethod] = useState('cod');
   const [formData, setFormdata] = useState({
     firstName: "",
@@ -89,7 +89,8 @@ const validateCoupon = async () => {
 // Modify your getCartAmount function to account for discounts
 const getTotalAmount = () => {
   const cartTotal = getCartAmount();
-  return cartTotal + delivery_fee - discountAmount;
+  console.log(cartTotal)
+  return cartTotal +delivery_fee- discountAmount;
 };
 
   useEffect(() => {
@@ -186,7 +187,7 @@ const getTotalAmount = () => {
     console.log("Oreder",order.id)
     const options = {
       key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-      amount: order.amount,
+      amount: order.amount ,
       currency: order.currency,
       name: "Order Payment",
       description: appliedCoupon ? `Order Payment (Coupon: ${appliedCoupon.code})` : "Order Payment",
@@ -249,11 +250,13 @@ const getTotalAmount = () => {
       let orderData = {
         address: formData,
         items: orderItems,
-        amount: getTotalAmount(),
-        originalAmount: getCartAmount()+delivery_fee,
+        amount:parseInt(getTotalAmount().toFixed(2)),
+        originalAmount:parseInt((getCartAmount()+delivery_fee).toFixed(2)),
         discountAmount: discountAmount,
         order_id: Math.random(), // Replace with actual order ID
         couponCode : appliedCoupon ? appliedCoupon.code : null,
+        conversionRate,
+        currency
       }
 
       console.log("OrderData", orderData);
@@ -294,8 +297,10 @@ const getTotalAmount = () => {
 
           const responseRazorpay = await axios.post(backendUrl + "/api/order/razorpay", orderData, { headers: { token } })
 
+          
+
           if (responseRazorpay.data.success) {
-            // console.log(responseRazorpay.data.order);
+            console.log(responseRazorpay.data.order);
             initPay(responseRazorpay.data.order);
             console.log(responseRazorpay)
             // navigate("/orders")
@@ -372,7 +377,7 @@ const getTotalAmount = () => {
                     <div className='flex w-full justify-center items-center gap-8 sm:gap-8 lg:gap-8'>
                       {/* Total Price */}
                       <p className="text-gray-600 lg:mt-2 flex justify-center items-center">
-                        <span className="font-medium">{currency}{(productData.price * item.quantity).toFixed(2)}</span>
+                        <span className="font-medium">{currency} {(productData.price * item.quantity * conversionRate).toFixed(2)}</span>
                       </p>
 
                       {/* Remove Button */}
@@ -449,24 +454,24 @@ const getTotalAmount = () => {
   <div className='space-y-2'>
     <div className='flex justify-between'>
       <span>Subtotal:</span>
-      <span>{currency}{getCartAmount().toFixed(2)}</span>
+      <span>{currency} {getCartAmount()}</span>
     </div>
     
     <div className='flex justify-between'>
       <span>Delivery Fee:</span>
-      <span>{currency}{delivery_fee.toFixed(2)}</span>
+      <span>{currency} {delivery_fee}</span>
     </div>
     
     {appliedCoupon && (
       <div className='flex justify-between text-green-600'>
         <span>Discount ({appliedCoupon.code}):</span>
-        <span>-{currency}{discountAmount.toFixed(2)}</span>
+        <span>-{currency} {discountAmount.toFixed(2)}</span>
       </div>
     )}
     
     <div className='flex justify-between font-bold text-lg pt-2 border-t border-gray-300 mt-2'>
       <span>Total:</span>
-      <span>{currency}{getTotalAmount().toFixed(2)}</span>
+      <span>{currency} {getTotalAmount().toFixed(2)}</span>
     </div>
   </div>
 </div>
@@ -590,14 +595,14 @@ const getTotalAmount = () => {
         </div>
         {/* <img src={assets.cashpayment} alt="" className='hidden sm:block w-1/3 h-full object-cover' /> */}
         {/* Right Side */}
-        <div className='w-full  bg-gray-100 p-4 sm:p-4 lg:p-8 rounded-lg'>
+        <div className='w-full h-full bg-gray-100 p-4 sm:p-4 lg:p-8 rounded-lg'>
           <h1 className='text-2xl font-medium py-4'>Choose Payment Option:</h1>
 
           <div className='space-y-4'>
 
             {/* Credit/Debit Card */}
-            <div onClick={() => setMethod("card")} className={`border p-4 rounded-lg cursor-pointer ${method === 'card' ? 'border-black' : 'border-gray-300'}`}>
-              <div className='flex items-center justify-between'>
+            {/* <div onClick={() => setMethod("card")} className={`border p-4 rounded-lg cursor-pointer ${method === 'card' ? 'border-black' : 'border-gray-300'}`}> */}
+              {/* <div className='flex items-center justify-between'>
                 <label className='flex items-center gap-2'>
                   <input type="radio" name="paymentMethod" checked={method === 'card'} onChange={() => setMethod("card")} />
                   <span className="font-medium">Credit Card</span>
@@ -607,8 +612,8 @@ const getTotalAmount = () => {
                   <img src={payment2} alt="Card Icons" className='h-5' />
                   <img src={payment3} alt="Card Icons" className='h-5' />
                 </div>
-              </div>
-              {method === 'card' && (
+              </div> */}
+              {/* {method === 'card' && (
                 <div className="mt-4 space-y-3">
                   <input type="text" placeholder='Name On Card' className='border border-gray-300 rounded-lg py-2 px-4 w-full' required />
                   <input type="text" placeholder='Card Numbers' className='border border-gray-300 rounded-lg py-2 px-4 w-full' required />
@@ -621,8 +626,8 @@ const getTotalAmount = () => {
                     <span>Save Card Details</span>
                   </label>
                 </div>
-              )}
-            </div>
+              )} */}
+            {/* </div> */}
 
             {/* Cash on Delivery */}
             <div onClick={() => setMethod("cod")} className={`border p-4 rounded-lg cursor-pointer ${method === 'cod' ? 'border-black' : 'border-gray-300'}`}>
@@ -641,12 +646,12 @@ const getTotalAmount = () => {
             </div>
 
             {/* PayPal */}
-            <div onClick={() => setMethod("paypal")} className={`border p-4 rounded-lg cursor-pointer ${method === 'paypal' ? 'border-black' : 'border-gray-300'}`}>
+            {/* <div onClick={() => setMethod("paypal")} className={`border p-4 rounded-lg cursor-pointer ${method === 'paypal' ? 'border-black' : 'border-gray-300'}`}>
               <label className='flex items-center gap-2'>
                 <input type="radio" name="paymentMethod" checked={method === 'paypal'} onChange={() => setMethod("paypal")} />
                 <img src={paypal} alt="PayPal" className='h-5' />
               </label>
-            </div>
+            </div> */}
 
           </div>
 

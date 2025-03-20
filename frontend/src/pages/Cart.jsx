@@ -239,7 +239,7 @@ import Button from '../components/Button';
 import { IoIosArrowDown } from "react-icons/io";
 
 const Cart = () => {
-  const { products, currency, cartItems, updateQuantity, navigate } = useContext(ShopContext);
+  const { products, currency, cartItems, updateQuantity, navigate ,conversionRate} = useContext(ShopContext);
   const [cartData, setCartData] = useState([]);
 
   useEffect(() => {
@@ -325,7 +325,7 @@ const Cart = () => {
                     <div className='flex w-full justify-center items-center gap-8 sm:gap-8 lg:gap-8'>
                       {/* Total Price */}
                       <p className="text-gray-600 lg:mt-2 flex justify-center items-center">
-                        <span className="font-medium">{currency}{(productData.price * item.quantity).toFixed(2)}</span>
+                        <span className="font-medium">{currency} {(productData.price * conversionRate * item.quantity).toFixed(2)}</span>
                       </p>
 
                       {/* Remove Button */}
