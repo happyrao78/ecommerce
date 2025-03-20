@@ -5,7 +5,8 @@ const languages = [
   { code: 'es', name: 'Spanish' },
   { code: 'fr', name: 'French' },
   { code: 'de', name: 'German' },
-  { code: 'ja', name: 'Japanese' }
+  { code: 'ja', name: 'Japanese' },
+  { code: 'en', name: 'English' },
 ];
 
 const CustomTranslate = () => {
