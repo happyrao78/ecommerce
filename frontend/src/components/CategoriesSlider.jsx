@@ -10,11 +10,11 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 // import { backendUrl } from '../App';
 import { toast } from 'react-toastify';
-import { ShopContext } from '../context/shopContext';
+// import { ShopContext } from '../context/shopContext';
 
 const CategoriesSlider = ({ token }) => {
     const [categories, setCategories] = useState([]);
-    const {backendUrl} = useContext(ShopContext)
+    // const {backendUrl} = useContext(ShopContext)
     const [loading, setLoading] = useState(true);
     const [swiperInitialized, setSwiperInitialized] = useState(false);
 
@@ -25,7 +25,7 @@ const CategoriesSlider = ({ token }) => {
     const fetchCategories = async () => {
         setLoading(true);
         try {
-            const response = await axios.get( backendUrl + "/api/category/getSubCategory",
+            const response = await axios.get( "https://ecommerce-production-e059.up.railway.app/api/category/getSubCategory",
                 { headers: { Authorization: `Bearer ${token}` } }
             );
             
