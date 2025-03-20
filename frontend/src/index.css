@@ -139,8 +139,7 @@ li.slick-active{
   background-color: transparent !important;
   box-shadow: none !important;
 }
-  animation: marquee2 80s linear infinite;
-}
+
 
 /* Add hover pause functionality */
 .animate-marquee:hover,
